@@ -4,12 +4,17 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Billy D. Willz</title>
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E%F0%9F%AA%BD%3C/text%3E%3C/svg%3E">
     <link rel="stylesheet" href="css/style.css">
-    <script src="https://unpkg.com/@phosphor-icons/web"></script>
-    <script src="https://unpkg.com/three@0.160.0/build/three.min.js"></script>
+    <link rel="stylesheet" href="css/vendor/phosphor/regular/style.css">
+    <script src="js/vendor/three/three.min.js"></script>
+    <!-- Hand-tracking is an optional novelty feature (Music section, "Enable Hand
+         Control"). It stays on CDN since self-hosting mediapipe's wasm/model
+         assets is out of scope here; usage is guarded so a failed/blocked load
+         only disables that one feature instead of crashing the page. -->
     <script src="https://cdn.jsdelivr.net/npm/@mediapipe/hands/hands.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@mediapipe/camera_utils/camera_utils.js"></script>
-    <script src="https://unpkg.com/lenis@1.1.13/dist/lenis.min.js"></script>
+    <script src="js/vendor/lenis/lenis.min.js"></script>
 </head>
 <body>
 
@@ -582,18 +587,34 @@
     </footer>
 
     <script>
-        // ── LENIS SMOOTH SCROLL ──
-        const lenis = new Lenis({
-            duration: 1.1,
-            easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
-            smoothWheel: true
-        });
+        // ── LENIS SMOOTH SCROLL (native-scroll fallback if the CDN/library failed) ──
+        let lenis;
+        if (typeof Lenis !== 'undefined') {
+            lenis = new Lenis({
+                duration: 1.1,
+                easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
+                smoothWheel: true
+            });
 
-        function raf(time) {
-            lenis.raf(time);
-            requestAnimationFrame(raf);
+            (function raf(time) {
+                lenis.raf(time);
+                requestAnimationFrame(raf);
+            })();
+        } else {
+            console.warn('Lenis unavailable — using native scroll fallback');
+            const scrollListeners = [];
+            lenis = {
+                get scroll() { return window.scrollY; },
+                on(event, cb) { if (event === 'scroll') scrollListeners.push(cb); },
+                scrollTo(target) {
+                    const el = typeof target === 'string' ? document.querySelector(target) : target;
+                    if (el) el.scrollIntoView({ behavior: 'smooth' });
+                }
+            };
+            window.addEventListener('scroll', () => {
+                scrollListeners.forEach(cb => cb({ scroll: window.scrollY }));
+            }, { passive: true });
         }
-        requestAnimationFrame(raf);
 
         document.querySelectorAll('a[href^="#"]').forEach(link => {
             link.addEventListener('click', (e) => {
@@ -609,6 +630,7 @@
         const nav = document.getElementById('nav');
         const sections = document.querySelectorAll('section[id]');
         const navLinks = document.querySelectorAll('.nav-link');
+        let lastActiveSection = 'home';
 
         lenis.on('scroll', ({ scroll }) => {
             nav.classList.toggle('scrolled', scroll > 50);
@@ -619,6 +641,15 @@
                     current = section.getAttribute('id');
                 }
             });
+
+            // one glitch pulse per section transition, so scrolling reads as
+            // moving through one continuous glitching world rather than
+            // separate sections with the hero effect walled off inside it
+            if (current && current !== lastActiveSection) {
+                lastActiveSection = current;
+                pulseGlitch();
+            }
+
             navLinks.forEach(link => {
                 link.classList.remove('active');
                 if (link.getAttribute('href') === '#' + current) {
@@ -683,7 +714,7 @@
         const glitchSilhouette = document.getElementById('glitch-silhouette');
         const heroBg = document.querySelector('.hero-bg');
 
-        function triggerGlitch() {
+        function pulseGlitch() {
             glitchTitle.classList.add('glitching');
             glitchSilhouette.classList.add('glitching');
             heroBg.classList.add('glitching');
@@ -693,6 +724,10 @@
                 glitchSilhouette.classList.remove('glitching');
                 heroBg.classList.remove('glitching');
             }, 350);
+        }
+
+        function triggerGlitch() {
+            pulseGlitch();
             const nextDelay = 2500 + Math.random() * 4000;
             setTimeout(triggerGlitch, nextDelay);
         }
@@ -871,6 +906,12 @@
         let targetPointerX = 9999, targetPointerY = 9999;
         let targetDissolve = 0.08;
 
+        // The particle-dissolve logo art is a purely decorative enhancement on
+        // top of the static card (title/type text underneath already reads
+        // fine) — if Three.js didn't load, skip it instead of throwing.
+        if (typeof THREE === 'undefined') {
+            console.warn('Three.js unavailable — logo particle effect disabled');
+        } else {
         const scene = new THREE.Scene();
         const camera3d = new THREE.PerspectiveCamera(50, 1, 0.1, 2000);
         camera3d.position.z = 500;
@@ -980,6 +1021,7 @@
             }
             animate();
         };
+        }
 
         function updatePointerFromEvent(clientX, clientY) {
             const rect = stage.getBoundingClientRect();
@@ -1054,6 +1096,11 @@
                 pointerX = 9999;
                 pointerY = 9999;
                 dissolveAmount = 0.08;
+                return;
+            }
+
+            if (typeof Hands === 'undefined' || typeof Camera === 'undefined') {
+                handStatus.textContent = '> hand-tracking library unavailable — mouse control active_';
                 return;
             }
 

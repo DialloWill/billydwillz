@@ -478,9 +478,21 @@ body {
 .hotspot-music    { left: 58%; top: 34%; }
 .hotspot-story    { left: 14%; top: 22%; }
 .hotspot-about    { left: 69%; top: 24%; }
-.hotspot-contact  { left: 47%; top: 32%; }
-.hotspot-youtube  { left: 6%;  top: 54%; }
-.hotspot-instagram{ left: 95%; top: 58%; }
+.hotspot-contact  { left: 37%; top: 30%; }
+.hotspot-youtube  { left: 24%; top: 25%; }
+.hotspot-instagram{ left: 98%; top: 39%; }
+
+/* On narrow phones the "cover"-cropped photo shows a different slice, and
+   the hero title takes up nearly the full width, so the desktop landmark
+   coordinates above land on/under the text. Re-anchor all six to the clear
+   strip between the nav and the title on this crop instead. */
+@media (max-width: 600px) {
+    .hotspot-youtube   { left: 30%; top: 20%; }
+    .hotspot-contact   { left: 47%; top: 22%; }
+    .hotspot-music     { left: 58%; top: 16%; }
+    .hotspot-about     { left: 69%; top: 20%; }
+    .hotspot-instagram { left: 81%; top: 21%; }
+}
 
 .hotspot-dot {
     position: absolute;
@@ -704,7 +716,7 @@ body {
 .hero-motifs {
     position: absolute;
     inset: 0;
-    z-index: 1;
+    z-index: 2;
     pointer-events: none;
 }
 
@@ -776,7 +788,7 @@ body {
 .silhouette-cluster {
     position: absolute;
     inset: 0;
-    z-index: 1;
+    z-index: 2;
     pointer-events: none;
 }
 
@@ -791,7 +803,7 @@ body {
 .hero-silhouette {
     position: absolute;
     top: 0;
-    left: 0;
+    right: 0;
     height: 100%;
     width: auto;
 }
@@ -868,7 +880,7 @@ body {
         rgba(8,10,10,0.65) 40%,
         rgba(8,10,10,0.2) 100%
     );
-    z-index: 2;
+    z-index: 1;
     pointer-events: none;
 }
 
@@ -878,6 +890,16 @@ body {
     max-width: 1200px;
     width: 100%;
     margin: 0 auto;
+    /* Text here (title, tagline, sector line) has no click behavior of its
+       own but otherwise sits above the hotspot layer and blocks clicks
+       wherever it visually overlaps a hotspot. Let clicks pass through and
+       re-enable only on the actually-interactive children below. */
+    pointer-events: none;
+}
+
+.hero-cta,
+.world-controls {
+    pointer-events: auto;
 }
 
 .hero-eyebrow {
