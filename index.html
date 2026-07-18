@@ -7,7 +7,7 @@
     <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E%F0%9F%AA%BD%3C/text%3E%3C/svg%3E">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=DM+Sans:wght@400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="css/style.css">
     <link rel="stylesheet" href="css/vendor/phosphor/regular/style.css">
     <script src="js/vendor/three/three.min.js"></script>
@@ -24,14 +24,7 @@
     <!-- NAV -->
     <nav class="nav" id="nav">
         <div class="nav-inner">
-            <a href="#home" class="nav-logo">BillyD.Willz</a>
-            <ul class="nav-links">
-                <li><a href="#home" class="nav-link active">Home</a></li>
-                <li><a href="#music" class="nav-link">Music</a></li>
-                <li><a href="#story" class="nav-link">Story</a></li>
-                <li><a href="#about" class="nav-link">About</a></li>
-                <li><a href="#contact" class="nav-link">Contact</a></li>
-            </ul>
+            <a href="#home" class="nav-logo">Billy<span class="nav-logo-accent">D</span>.Willz</a>
             <button class="nav-hamburger" id="hamburger" aria-label="Menu">
                 <span></span><span></span><span></span>
             </button>
@@ -45,50 +38,28 @@
         </div>
     </nav>
 
-    <!-- HERO -->
+    <!-- HERO — painterly bleed-in figure, no copy: the image and the
+         restrained HUD layer carry the section entirely. -->
     <section class="hero" id="home">
-        <div class="hero-media">
-            <video class="hero-video" id="hero-video" autoplay muted loop playsinline preload="auto">
-                <source src="assets/video/15370420_3840_2160_30fps.mp4" type="video/mp4">
-            </video>
-            <div class="hero-scrim"></div>
-            <div class="hero-grain" aria-hidden="true"></div>
-        </div>
+        <div class="hero-glow" aria-hidden="true"></div>
 
-        <!-- SURVEILLANCE OVERLAY SYSTEM — corner viewfinder brackets, REC
-             indicator, live timestamp, and a live-viewer tag, all reading as
-             one cohesive security-feed HUD over the video. -->
-        <div class="surv-overlay" aria-hidden="true">
-            <span class="surv-corner surv-corner--tl"></span>
-            <span class="surv-corner surv-corner--tr"></span>
-            <span class="surv-corner surv-corner--bl"></span>
-            <span class="surv-corner surv-corner--br"></span>
+        <div class="hero-figure" role="img" aria-label="A silhouetted figure in a fitted cap, dissolving into smoke against a dark sky"></div>
 
-            <div class="surv-rec">
-                <span class="surv-rec-dot"></span>
-                <span class="surv-rec-label">REC</span>
+        <!-- HUD — thin corner brackets anchored to the viewport, a small
+             pulsing REC tag, and a live timestamp. Restrained on purpose:
+             an atmospheric detail, not a dashboard. -->
+        <div class="hud" aria-hidden="true">
+            <span class="hud-corner hud-corner--tl"></span>
+            <span class="hud-corner hud-corner--tr"></span>
+            <span class="hud-corner hud-corner--bl"></span>
+            <span class="hud-corner hud-corner--br"></span>
+
+            <div class="hud-rec">
+                <span class="hud-rec-dot"></span>
+                <span class="hud-rec-label">REC</span>
             </div>
 
-            <div class="surv-timestamp" id="surv-timestamp">CAM 01 — 00.00.0000 00:00:00</div>
-
-            <div class="surv-viewer">
-                <span class="surv-live-dot"></span>
-                <span class="surv-viewer-text">LIVE · 1 VIEWER</span>
-            </div>
-        </div>
-
-        <div class="hero-content">
-            <p class="hero-eyebrow">You are being watched.</p>
-            <h1 class="hero-wordmark">Billy<span class="hero-wordmark-accent">D.</span>Willz</h1>
-            <p class="hero-tagline">Cloud rap. Cinematic. Real.</p>
-            <div class="hero-cta">
-                <a href="#music" class="hero-btn hero-btn--primary">Hear The Music</a>
-                <a href="#about" class="hero-btn hero-btn--ghost">The Story</a>
-            </div>
-        </div>
-
-        <div class="hero-scroll">
-            <div class="hero-scroll-line"></div>
+            <div class="hud-timestamp" id="hud-timestamp">CAM 01 — 00.00.0000 00:00:00</div>
         </div>
     </section>
 
@@ -352,7 +323,7 @@
         // ── NAV SCROLL STATE ──
         const nav = document.getElementById('nav');
         const sections = document.querySelectorAll('section[id]');
-        const navLinks = document.querySelectorAll('.nav-link');
+        const navLinks = document.querySelectorAll('.nav-mobile-link');
 
         lenis.on('scroll', ({ scroll }) => {
             nav.classList.toggle('scrolled', scroll > 50);
@@ -411,9 +382,9 @@
             storyObserver.observe(beat);
         });
 
-        // ── HERO SURVEILLANCE TIMESTAMP ──
-        const survTimestampEl = document.getElementById('surv-timestamp');
-        function updateSurvTimestamp() {
+        // ── HERO HUD TIMESTAMP ──
+        const hudTimestampEl = document.getElementById('hud-timestamp');
+        function updateHudTimestamp() {
             const now = new Date();
             const mm = String(now.getMonth() + 1).padStart(2, '0');
             const dd = String(now.getDate()).padStart(2, '0');
@@ -421,10 +392,10 @@
             const hh = String(now.getHours()).padStart(2, '0');
             const mi = String(now.getMinutes()).padStart(2, '0');
             const ss = String(now.getSeconds()).padStart(2, '0');
-            survTimestampEl.textContent = `CAM 01 — ${mm}.${dd}.${yyyy} ${hh}:${mi}:${ss}`;
+            hudTimestampEl.textContent = `CAM 01 — ${mm}.${dd}.${yyyy} ${hh}:${mi}:${ss}`;
         }
-        updateSurvTimestamp();
-        setInterval(updateSurvTimestamp, 1000);
+        updateHudTimestamp();
+        setInterval(updateHudTimestamp, 1000);
 
         // ── DRAGGABLE CAROUSEL ──
         const track = document.getElementById('carousel-track');
