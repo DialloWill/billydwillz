@@ -210,10 +210,18 @@ body {
 }
 
 /* ── BLEED-IN HERO FIGURE ──
-   The PNG itself already has soft smoke edges on most sides; the mask
-   below fades the remaining perimeter to transparent so the image reads
-   as emerging from the page background rather than a pasted photo. No
-   hard rectangle should ever be visible. */
+   The PNG itself already has soft smoke edges on most sides; the ::after
+   overlay below fades the remaining perimeter into the page background
+   so the image reads as emerging from it rather than a pasted photo. No
+   hard rectangle should ever be visible.
+
+   The fade is directional (top/left/right only), not a symmetric radial
+   dim from one center point — the source photo has the cap near the top
+   and the jacket running all the way to the bottom, so a radial fade
+   inevitably dimmed the shoulders/jacket long before the top. The figure
+   should read as grounded, standing at the bottom of the frame: full
+   clarity from the cap down through the jacket, fading only at the top
+   and sides. */
 .hero-figure {
     position: absolute;
     left: 50%;
@@ -226,18 +234,6 @@ body {
     background-size: cover;
     background-position: center 30%;
     background-repeat: no-repeat;
-    /* mask-image is the "correct" way to bleed the edges out, but it
-       doesn't reliably composite in every rendering environment — the
-       ::after overlay below is the guaranteed fallback that does the
-       same fade by painting the page's own background color over the
-       image's edges, so the bleed-in holds even where masking silently
-       no-ops. Center sits near the box's true middle and the opaque
-       plateau runs to ~78% radius so the cap, smoke mass, and shoulders
-       all render at full clarity — only the outer ~20% edge band fades. */
-    -webkit-mask-image: radial-gradient(ellipse closest-side at 50% 46%, #000 78%, transparent 100%);
-    mask-image: radial-gradient(ellipse closest-side at 50% 46%, #000 78%, transparent 100%);
-    -webkit-mask-repeat: no-repeat;
-    mask-repeat: no-repeat;
 }
 
 .hero-figure::after {
@@ -245,7 +241,10 @@ body {
     position: absolute;
     inset: 0;
     pointer-events: none;
-    background: radial-gradient(ellipse closest-side at 50% 46%, transparent 0%, transparent 78%, var(--hf-deep) 100%);
+    background:
+        linear-gradient(to bottom, var(--hf-deep) 0%, transparent 16%),
+        linear-gradient(to right, var(--hf-deep) 0%, transparent 12%),
+        linear-gradient(to left, var(--hf-deep) 0%, transparent 12%);
 }
 
 /* ── HUD — thin red-accent corner brackets anchored to the viewport,
