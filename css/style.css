@@ -11,14 +11,6 @@
     src: url('../fonts/Vonder Clean.ttf') format('truetype');
 }
 @font-face {
-    font-family: 'Fedattona';
-    src: url('../fonts/Fedattona Italic.ttf') format('truetype');
-}
-@font-face {
-    font-family: 'Rellive';
-    src: url('../fonts/Rellive-511mv.ttf') format('truetype');
-}
-@font-face {
     font-family: 'GeorgiaBrush';
     src: url('../fonts/Georgia Brush.otf') format('opentype');
 }
@@ -41,6 +33,14 @@
     --pb-sat2: 55%;
     --pb-light2: 50%;
     --pb-primary: hsl(var(--pb-hue2), var(--pb-sat2), var(--pb-light2));
+
+    /* Hero-figure palette — scoped to the hero/nav-logo only, kept
+       separate from the site-wide --gold/--bg theme used elsewhere. */
+    --hf-deep: #091f36;
+    --hf-mid: #0f2862;
+    --hf-muted: #4f5f76;
+    --hf-red: #9e363a;
+    --hf-offwhite: #f5f5f2;
 }
 
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
@@ -53,206 +53,6 @@ body {
     background: var(--bg);
     color: var(--text);
     overflow-x: hidden;
-}
-
-/* ── SURVEILLANCE OVERLAYS ── */
-.scanline-overlay {
-    position: fixed;
-    inset: 0;
-    z-index: 9997;
-    pointer-events: none;
-    background: repeating-linear-gradient(
-        to bottom,
-        rgba(255,255,255,0.025) 0px,
-        rgba(255,255,255,0.025) 1px,
-        transparent 1px,
-        transparent 3px
-    );
-    mix-blend-mode: overlay;
-}
-
-.scanline-overlay::after {
-    content: '';
-    position: absolute;
-    left: 0;
-    right: 0;
-    height: 120px;
-    background: linear-gradient(to bottom, transparent, rgba(122,255,158,0.04), transparent);
-    animation: scanSweep 7s linear infinite;
-}
-
-@keyframes scanSweep {
-    0% { top: -120px; }
-    100% { top: 100vh; }
-}
-
-.vignette-overlay {
-    position: fixed;
-    inset: 0;
-    z-index: 9996;
-    pointer-events: none;
-    background: radial-gradient(ellipse at center, transparent 55%, rgba(0,0,0,0.55) 100%);
-}
-
-.cctv-tag {
-    position: fixed;
-    top: 20px;
-    right: 24px;
-    z-index: 9998;
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    font-family: 'VonderClean', monospace;
-    font-size: 10px;
-    letter-spacing: 2px;
-    color: var(--alert-red);
-    text-shadow: 0 0 8px rgba(225,75,58,0.5);
-    pointer-events: none;
-}
-
-.rec-dot {
-    width: 6px;
-    height: 6px;
-    background: var(--alert-red);
-    border-radius: 50%;
-    animation: recBlink 1.2s steps(1) infinite;
-}
-
-@keyframes recBlink {
-    0%, 49% { opacity: 1; }
-    50%, 100% { opacity: 0.15; }
-}
-
-#cctv-timestamp {
-    color: var(--muted);
-    letter-spacing: 1px;
-}
-
-/* ── TRACKING CURSOR (reticle) ── */
-@media (pointer: fine) {
-    body { cursor: none; }
-    a, button { cursor: none; }
-}
-
-.tracking-cursor {
-    position: fixed;
-    top: 0; left: 0;
-    width: 0;
-    height: 0;
-    pointer-events: none;
-    z-index: 9999;
-    will-change: transform;
-}
-
-.reticle-bracket {
-    position: absolute;
-    width: 10px;
-    height: 10px;
-    border: 1px solid var(--gold);
-    opacity: 0.85;
-    transition: width 0.3s var(--ease), height 0.3s var(--ease), border-color 0.3s var(--ease);
-}
-
-.reticle-bracket.tl { top: -22px; left: -22px; border-right: none; border-bottom: none; }
-.reticle-bracket.tr { top: -22px; left: 12px; border-left: none; border-bottom: none; }
-.reticle-bracket.bl { top: 12px; left: -22px; border-right: none; border-top: none; }
-.reticle-bracket.br { top: 12px; left: 12px; border-left: none; border-top: none; }
-
-.reticle-crosshair-h {
-    position: absolute;
-    top: -1px; left: -6px;
-    width: 12px;
-    height: 1px;
-    background: var(--gold);
-    opacity: 0.9;
-}
-
-.reticle-crosshair-v {
-    position: absolute;
-    top: -6px; left: -1px;
-    width: 1px;
-    height: 12px;
-    background: var(--gold);
-    opacity: 0.9;
-}
-
-.reticle-coords {
-    position: absolute;
-    top: 20px;
-    left: 16px;
-    font-family: 'VonderClean', monospace;
-    font-size: 9px;
-    letter-spacing: 1px;
-    color: var(--gold);
-    white-space: nowrap;
-    opacity: 0.7;
-}
-
-.tracking-cursor.tracking-lock .reticle-bracket {
-    width: 26px;
-    height: 26px;
-    border-color: var(--alert-red);
-}
-
-.tracking-cursor.tracking-lock .reticle-bracket.tl { top: -38px; left: -38px; }
-.tracking-cursor.tracking-lock .reticle-bracket.tr { top: -38px; left: 12px; }
-.tracking-cursor.tracking-lock .reticle-bracket.bl { top: 12px; left: -38px; }
-.tracking-cursor.tracking-lock .reticle-bracket.br { top: 12px; left: 12px; }
-
-@media (pointer: coarse) {
-    .tracking-cursor { display: none; }
-    body, a, button { cursor: auto; }
-}
-
-/* ── GLITCH TEXT ── */
-.glitch-text {
-    position: relative;
-}
-
-.glitch-text.glitching {
-    animation: glitchJitter 0.35s steps(2, end);
-}
-
-.glitch-text.glitching::before,
-.glitch-text.glitching::after {
-    content: attr(data-text);
-    position: absolute;
-    top: 0; left: 0;
-    width: 100%;
-    white-space: pre;
-}
-
-.glitch-text.glitching::before {
-    color: #ff2d55;
-    mix-blend-mode: screen;
-    animation: glitchSliceA 0.35s steps(2, end);
-}
-
-.glitch-text.glitching::after {
-    color: #22d3ee;
-    mix-blend-mode: screen;
-    animation: glitchSliceB 0.35s steps(2, end);
-}
-
-@keyframes glitchJitter {
-    0% { transform: translate(0, 0); }
-    20% { transform: translate(-2px, 1px); }
-    40% { transform: translate(2px, -1px); }
-    60% { transform: translate(-1px, 0); }
-    80% { transform: translate(1px, 1px); }
-    100% { transform: translate(0, 0); }
-}
-
-@keyframes glitchSliceA {
-    0% { clip-path: inset(10% 0 70% 0); transform: translate(-3px, 0); }
-    50% { clip-path: inset(60% 0 10% 0); transform: translate(3px, 0); }
-    100% { clip-path: inset(30% 0 50% 0); transform: translate(-2px, 0); }
-}
-
-@keyframes glitchSliceB {
-    0% { clip-path: inset(70% 0 5% 0); transform: translate(3px, 0); }
-    50% { clip-path: inset(15% 0 65% 0); transform: translate(-3px, 0); }
-    100% { clip-path: inset(45% 0 25% 0); transform: translate(2px, 0); }
 }
 
 /* ── SYSTEM ALERT UI ── */
@@ -309,47 +109,21 @@ body {
 }
 
 .nav-logo {
-    font-family: 'Vendetta', serif;
-    font-size: 28px;
-    color: var(--gold);
+    font-family: 'DM Serif Display', serif;
+    font-size: 22px;
+    color: var(--hf-offwhite);
     text-decoration: none;
-    letter-spacing: 4px;
+    letter-spacing: 0.5px;
 }
 
-.nav-links {
-    display: flex;
-    list-style: none;
-    gap: 44px;
+.nav-logo-accent {
+    color: var(--hf-red);
 }
 
-.nav-link {
-    font-family: 'VonderClean', sans-serif;
-    font-size: 11px;
-    letter-spacing: 3px;
-    text-transform: uppercase;
-    color: #f0f0f5;
-    text-decoration: none;
-    transition: color 0.3s var(--ease);
-    position: relative;
-}
-
-.nav-link::after {
-    content: '';
-    position: absolute;
-    bottom: -4px; left: 0; right: 0;
-    height: 1px;
-    background: var(--gold);
-    transform: scaleX(0);
-    transition: transform 0.35s var(--ease);
-}
-
-.nav-link:hover,
-.nav-link.active { color: var(--gold); }
-.nav-link.active::after,
-.nav-link:hover::after { transform: scaleX(1); }
-
+/* Minimal nav: wordmark + a single menu icon, at every viewport width —
+   full navigation lives in the .nav-mobile drawer the icon toggles. */
 .nav-hamburger {
-    display: none;
+    display: flex;
     flex-direction: column;
     gap: 5px;
     background: none;
@@ -405,628 +179,194 @@ body {
     transform: translateX(0);
 }
 
-.nav-mobile-link:hover { color: var(--gold); }
+.nav-mobile-link:hover,
+.nav-mobile-link.active { color: var(--gold); }
 
 /* ── HERO ── */
 .hero {
     position: relative;
     min-height: 100vh;
-    display: flex;
-    align-items: center;
-    justify-content: flex-start;
-    padding: 140px 48px 100px;
     overflow: hidden;
+    background: var(--hf-deep);
 }
 
-/* The hero background is a real photo of the BillyD.Willz city —
-   the glitch channel layers, halftone, and CCTV frame all sit on
-   top of it exactly as they did over the old canvas. */
-.hero-bg {
+/* soft radial glow behind the figure for depth — CSS only, no extra
+   image assets. Uses the exact same box formula as .hero-figure (just
+   scaled up a little) so the glow always stays centered behind the
+   figure regardless of viewport aspect ratio, instead of being pinned
+   to hero-relative percentages that drift apart from the figure's own
+   bottom-anchored box on tall/narrow viewports. Fully faded to literal
+   transparency well inside that box, so it can never seam against the
+   figure's own flat-color edge fade. */
+.hero-glow {
+    position: absolute;
+    left: 50%;
+    bottom: 0;
+    transform: translateX(-50%);
+    width: min(1220px, 96vw);
+    aspect-ratio: 1672 / 941;
+    z-index: 0;
+    background: radial-gradient(ellipse 32% 26% at 50% 58%, rgba(15,40,98,0.55) 0%, rgba(15,40,98,0) 65%);
+}
+
+/* ── BLEED-IN HERO FIGURE ──
+   The PNG itself already has soft smoke edges on most sides; the ::after
+   overlay below fades the remaining perimeter into the page background
+   so the image reads as emerging from it rather than a pasted photo. No
+   hard rectangle should ever be visible.
+
+   The fade is directional (top/left/right only), not a symmetric radial
+   dim from one center point — the source photo has the cap near the top
+   and the jacket running all the way to the bottom, so a radial fade
+   inevitably dimmed the shoulders/jacket long before the top. The figure
+   should read as grounded, standing at the bottom of the frame: full
+   clarity from the cap down through the jacket, fading only at the top
+   and sides. */
+.hero-figure {
+    position: absolute;
+    left: 50%;
+    bottom: 0;
+    transform: translateX(-50%);
+    width: min(1040px, 82vw);
+    aspect-ratio: 1672 / 941;
+    z-index: 1;
+    background-image: url('../assets/images/hero-figure.png');
+    background-size: cover;
+    background-position: center 30%;
+    background-repeat: no-repeat;
+}
+
+.hero-figure::after {
+    content: '';
     position: absolute;
     inset: 0;
-    z-index: 0;
-    overflow: hidden;
-    background: #05040a;
+    pointer-events: none;
+    background:
+        linear-gradient(to bottom, var(--hf-deep) 0%, transparent 16%),
+        linear-gradient(to right, var(--hf-deep) 0%, transparent 12%),
+        linear-gradient(to left, var(--hf-deep) 0%, transparent 12%);
 }
 
-.hero-bg-image {
+/* ── HUD — thin red-accent corner brackets anchored to the viewport,
+   a small REC tag, and a live timestamp. Restrained by design. ── */
+.hud {
     position: absolute;
-    inset: -2%;
-    background-image: url('../assets/images/billydwillz-city.jpg');
-    background-size: cover;
-    background-position: center;
-    filter: saturate(1.05) contrast(1.03);
-    animation: heroBgDrift 40s ease-in-out infinite alternate;
+    inset: 0;
+    z-index: 2;
+    pointer-events: none;
+}
+
+.hud-corner {
+    position: absolute;
+    width: 28px;
+    height: 28px;
+}
+
+/* top offset clears the fixed site nav (~84px tall unscrolled) so the
+   HUD never overlaps the nav */
+.hud-corner--tl { top: 100px; left: 28px; border-top: 1px solid var(--hf-red); border-left: 1px solid var(--hf-red); }
+.hud-corner--tr { top: 100px; right: 28px; border-top: 1px solid var(--hf-red); border-right: 1px solid var(--hf-red); }
+.hud-corner--bl { bottom: 28px; left: 28px; border-bottom: 1px solid var(--hf-red); border-left: 1px solid var(--hf-red); }
+.hud-corner--br { bottom: 28px; right: 28px; border-bottom: 1px solid var(--hf-red); border-right: 1px solid var(--hf-red); }
+
+.hud-rec {
+    position: absolute;
+    top: 106px;
+    right: 36px;
+    display: flex;
+    align-items: center;
+    gap: 7px;
+    font-family: 'DM Mono', 'JetBrains Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 2.5px;
+    text-transform: uppercase;
+    color: var(--hf-red);
+}
+
+.hud-rec-dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: var(--hf-red);
+    box-shadow: 0 0 8px 2px rgba(158,54,58,0.65);
+    animation: hudRecPulse 1.6s ease-in-out infinite;
+}
+
+@keyframes hudRecPulse {
+    0%, 100% { opacity: 1; transform: scale(1); }
+    50% { opacity: 0.35; transform: scale(0.8); }
+}
+
+.hud-timestamp {
+    position: absolute;
+    bottom: 36px;
+    left: 36px;
+    font-family: 'DM Mono', 'JetBrains Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.5px;
+    color: var(--hf-muted);
+    white-space: nowrap;
+}
+
+/* ── CROSSHAIR CURSOR — stands in for the native pointer inside the
+   hero, part of the same restrained HUD system (red ring, grey-blue
+   ticks). Hidden until the mouse actually enters the hero. ── */
+@media (pointer: fine) {
+    .hero.hero-cursor-active,
+    .hero.hero-cursor-active a,
+    .hero.hero-cursor-active button {
+        cursor: none;
+    }
+}
+
+.hero-cursor {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 0;
+    height: 0;
+    z-index: 5;
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity 0.2s var(--ease);
     will-change: transform;
 }
 
-/* very slow drift/zoom so the background reads as "alive" rather
-   than a flat static image, without being distracting */
-@keyframes heroBgDrift {
-    0%   { transform: scale(1.02) translate(0, 0); }
-    100% { transform: scale(1.08) translate(-1%, -1%); }
+.hero-cursor.active {
+    opacity: 1;
 }
 
-@media (prefers-reduced-motion: reduce) {
-    .hero-bg-image { animation: none; }
-}
-
-/* ── HOTSPOTS — clickable points over the city photo ── */
-.hotspot-layer {
+.hero-cursor-ring {
     position: absolute;
-    inset: 0;
-    z-index: 2;
-}
-
-.hotspot {
-    position: absolute;
-    transform: translate(-50%, -50%);
-    width: 34px;
-    height: 34px;
-    background: none;
-    border: none;
-    padding: 0;
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-}
-
-/* Per-destination placement over the city photo. Adjust these
-   left/top percentages to fine-tune where each hotspot sits —
-   left = distance from the left edge, top = distance from the top. */
-.hotspot-music    { left: 58%; top: 34%; }
-.hotspot-story    { left: 14%; top: 22%; }
-.hotspot-about    { left: 69%; top: 24%; }
-.hotspot-contact  { left: 37%; top: 30%; }
-.hotspot-youtube  { left: 24%; top: 25%; }
-.hotspot-instagram{ left: 98%; top: 39%; }
-
-/* On narrow phones the "cover"-cropped photo shows a different slice, and
-   the hero title takes up nearly the full width, so the desktop landmark
-   coordinates above land on/under the text. Re-anchor all six to the clear
-   strip between the nav and the title on this crop instead. */
-@media (max-width: 600px) {
-    .hotspot-youtube   { left: 30%; top: 20%; }
-    .hotspot-contact   { left: 47%; top: 22%; }
-    .hotspot-music     { left: 58%; top: 16%; }
-    .hotspot-about     { left: 69%; top: 20%; }
-    .hotspot-instagram { left: 81%; top: 21%; }
-}
-
-.hotspot-dot {
-    position: absolute;
-    width: 8px;
-    height: 8px;
+    top: -9px;
+    left: -9px;
+    width: 18px;
+    height: 18px;
+    border: 1px solid var(--hf-red);
     border-radius: 50%;
-    background: var(--gold-bright);
-    box-shadow: 0 0 10px 2px rgba(232,169,74,0.7);
-    animation: hotspotPulse 2.4s ease-in-out infinite;
 }
 
-.hotspot-ring {
+.hero-cursor-tick {
     position: absolute;
-    width: 34px;
-    height: 34px;
-    border-radius: 50%;
-    border: 1px solid rgba(232,169,74,0.5);
-    opacity: 0.7;
-    transition: transform 0.3s var(--ease), opacity 0.3s var(--ease), border-color 0.3s var(--ease);
+    background: var(--hf-muted);
 }
 
-.hotspot:hover .hotspot-ring {
-    transform: scale(1.35);
-    opacity: 1;
-    border-color: var(--gold-bright);
-}
-
-.hotspot:hover .hotspot-dot {
-    box-shadow: 0 0 16px 4px rgba(232,169,74,0.9);
-}
-
-@keyframes hotspotPulse {
-    0%, 100% { transform: scale(1); opacity: 0.85; }
-    50% { transform: scale(1.25); opacity: 1; }
-}
-
-/* satellite/temp hotspots (YouTube, Instagram) — dimmer, cyan,
-   signals "not live yet" the same way the old wireframe monoliths did */
-.hotspot-temp .hotspot-dot {
-    background: #22d3ee;
-    box-shadow: 0 0 8px 2px rgba(34,211,238,0.5);
-    opacity: 0.55;
-    animation: hotspotFlicker 2.8s steps(1) infinite;
-}
-.hotspot-temp .hotspot-ring {
-    border-color: rgba(34,211,238,0.35);
-}
-
-@keyframes hotspotFlicker {
-    0%, 100% { opacity: 0.55; }
-    45% { opacity: 0.55; }
-    50% { opacity: 0.15; }
-    55% { opacity: 0.55; }
-    80% { opacity: 0.55; }
-    83% { opacity: 0.2; }
-    86% { opacity: 0.55; }
-}
-
-/* glitch tie-in — flashes red/cyan in sync with billyd-glitch,
-   same rhythm as the title/silhouette RGB-split */
-.hotspot.hotspot-flash .hotspot-dot {
-    animation: none;
-    background: #ff2d55;
-    box-shadow: 0 0 16px 4px rgba(255,45,85,0.8);
-}
-.hotspot.hotspot-flash.hotspot-temp .hotspot-dot {
-    background: #22d3ee;
-    box-shadow: 0 0 16px 4px rgba(34,211,238,0.9);
-}
+.hero-cursor-tick--t { top: -19px; left: -0.5px; width: 1px; height: 7px; }
+.hero-cursor-tick--b { top: 12px; left: -0.5px; width: 1px; height: 7px; }
+.hero-cursor-tick--l { top: -0.5px; left: -19px; width: 7px; height: 1px; }
+.hero-cursor-tick--r { top: -0.5px; left: 12px; width: 7px; height: 1px; }
 
 @media (max-width: 768px) {
-    .hotspot, .hotspot-ring { width: 26px; height: 26px; }
-    .hotspot-dot { width: 7px; height: 7px; }
+    .hero-figure { width: 94vw; }
+    .hud-corner { width: 20px; height: 20px; }
+    .hud-corner--tl, .hud-corner--tr { top: 76px; }
+    .hud-corner--bl, .hud-corner--br { bottom: 18px; }
+    .hud-corner--tl, .hud-corner--bl { left: 18px; }
+    .hud-corner--tr, .hud-corner--br { right: 18px; }
+    .hud-rec { top: 82px; right: 22px; font-size: 9px; letter-spacing: 1.5px; }
+    .hud-timestamp { bottom: 20px; left: 22px; font-size: 9px; }
 }
 
-/* RGB-split channels for the world glitch — reuses the
-   glitchSliceA / glitchSliceB keyframes above so the whole
-   hero tears in the same rhythm as the title + silhouette */
-.hero-bg-chan {
-    position: absolute;
-    inset: 0;
-    pointer-events: none;
-    mix-blend-mode: screen;
-    opacity: 0;
-}
-.hero-bg-chan--r { background: rgba(255,45,85,0.22); }
-.hero-bg-chan--c { background: rgba(34,211,238,0.20); }
-
-.hero-bg.glitching {
-    animation: worldTear 0.35s steps(2, end);
-}
-.hero-bg.glitching .hero-bg-chan--r {
-    opacity: 1;
-    animation: glitchSliceA 0.35s steps(2, end);
-}
-.hero-bg.glitching .hero-bg-chan--c {
-    opacity: 1;
-    animation: glitchSliceB 0.35s steps(2, end);
-}
-
-@keyframes worldTear {
-    0%   { clip-path: inset(0 0 0 0);    transform: translateX(0); }
-    25%  { clip-path: inset(8% 0 55% 0); transform: translateX(-6px); }
-    50%  { clip-path: inset(50% 0 15% 0); transform: translateX(5px); }
-    75%  { clip-path: inset(20% 0 40% 0); transform: translateX(-3px); }
-    100% { clip-path: inset(0 0 0 0);    transform: translateX(0); }
-}
-
-/* persistent Spiderverse-style halftone dot texture over the
-   world, low ambient presence, flashes brighter during glitch bursts */
-.hero-bg-halftone {
-    position: absolute;
-    inset: 0;
-    z-index: 1;
-    pointer-events: none;
-    background-image: radial-gradient(rgba(255,45,85,0.14) 1px, transparent 1px);
-    background-size: 4px 4px;
-    mix-blend-mode: screen;
-    opacity: 0.16;
-}
-.hero-bg.glitching .hero-bg-halftone {
-    opacity: 0.5;
-    animation: halftoneFlash 0.35s steps(2, end);
-}
-@keyframes halftoneFlash {
-    0%   { opacity: 0.16; }
-    30%  { opacity: 0.6; }
-    60%  { opacity: 0.3; }
-    100% { opacity: 0.16; }
-}
-
-/* CCTV scan-corner framing on the world itself */
-.hero-world-frame {
-    position: absolute;
-    inset: 24px;
-    z-index: 1;
-    pointer-events: none;
-}
-.hero-world-frame .corner {
-    position: absolute;
-    width: 22px;
-    height: 22px;
-    border: 1px solid rgba(122,255,158,0.45);
-}
-.hero-world-frame .corner.tl { top: 0; left: 0; border-right: none; border-bottom: none; }
-.hero-world-frame .corner.tr { top: 0; right: 0; border-left: none; border-bottom: none; }
-.hero-world-frame .corner.bl { bottom: 0; left: 0; border-right: none; border-top: none; }
-.hero-world-frame .corner.br { bottom: 0; right: 0; border-left: none; border-top: none; }
-
-.hero-world-tag {
-    position: absolute;
-    top: 0;
-    left: 30px;
-    font-family: 'VonderClean', monospace;
-    font-size: 9px;
-    letter-spacing: 2px;
-    color: var(--scan-green);
-    text-shadow: 0 0 6px rgba(122,255,158,0.4);
-    opacity: 0.75;
-}
-.hero-world-tag .rec-dot-mini {
-    display: inline-block;
-    width: 4px;
-    height: 4px;
-    background: var(--alert-red);
-    border-radius: 50%;
-    margin-right: 5px;
-    animation: recBlink 1.2s steps(1) infinite;
-}
-
-/* ── LINK PREVIEW BAR — CCTV/terminal-styled status bar, mirrors a
-   browser hover-URL preview but in the site's surveillance language.
-   Hidden until a monolith is hovered, per the storefront nav mechanic. */
-.world-linkbar {
-    position: absolute;
-    left: 24px;
-    bottom: 24px;
-    z-index: 3;
-    max-width: calc(100% - 48px);
-    font-family: 'VonderClean', monospace;
-    font-size: 11px;
-    letter-spacing: 1.5px;
-    color: var(--scan-green);
-    background: rgba(5,4,10,0.72);
-    border: 1px solid rgba(122,255,158,0.3);
-    padding: 8px 14px;
-    -webkit-backdrop-filter: blur(6px);
-    backdrop-filter: blur(6px);
-    opacity: 0;
-    transform: translateY(6px);
-    transition: opacity 0.2s var(--ease), transform 0.2s var(--ease);
-    pointer-events: none;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-}
-.world-linkbar.visible {
-    opacity: 1;
-    transform: translateY(0);
-}
-.world-linkbar.linkbar-temp {
-    color: #22d3ee;
-    border-color: rgba(34,211,238,0.35);
-}
-.world-linkbar-caret {
-    color: var(--gold);
-    margin-right: 6px;
-}
-
-@media (max-width: 768px) {
-    .world-linkbar {
-        left: 16px;
-        bottom: 16px;
-        font-size: 9px;
-        padding: 6px 10px;
-        max-width: calc(100% - 32px);
-    }
-}
-
-/* ── SYMBOLIC ICON MOTIFS ── */
-.hero-motifs {
-    position: absolute;
-    inset: 0;
-    z-index: 2;
-    pointer-events: none;
-}
-
-.hero-motif {
-    position: absolute;
-    color: var(--gold);
-    fill: currentColor;
-    opacity: 0.4;
-    filter: drop-shadow(0 0 8px rgba(201,135,58,0.3));
-}
-
-.motif-moon {
-    width: 34px; height: 34px;
-    top: 10%; left: 40%;
-    animation: motifFloat 7s ease-in-out infinite;
-}
-
-.motif-gun {
-    width: 46px; height: 28px;
-    top: 56%; left: 5%;
-    opacity: 0.32;
-    animation: motifFloat 8s ease-in-out infinite 0.5s;
-}
-
-.motif-money {
-    width: 32px; height: 32px;
-    top: 22%; left: 7%;
-    animation: motifFloat 6.5s ease-in-out infinite 1s;
-}
-
-.motif-pray {
-    width: 30px; height: 30px;
-    bottom: 14%; left: 32%;
-    animation: motifFloat 7.5s ease-in-out infinite 0.3s;
-}
-
-.motif-smoke {
-    width: 34px; height: 34px;
-    top: 66%; left: 22%;
-    animation: motifFloat 8.5s ease-in-out infinite 1.3s;
-}
-
-.motif-spark {
-    width: 18px; height: 18px;
-    opacity: 0.5;
-    animation: motifTwinkle 3s ease-in-out infinite;
-}
-
-.spark-1 { top: 14%; right: 40%; animation-delay: 0s; }
-.spark-2 { top: 42%; left: 55%; animation-delay: 1s; }
-.spark-3 { bottom: 26%; left: 13%; animation-delay: 1.8s; }
-
-@keyframes motifFloat {
-    0%, 100% { transform: translateY(0px); }
-    50% { transform: translateY(-10px); }
-}
-
-@keyframes motifTwinkle {
-    0%, 100% { opacity: 0.15; transform: scale(0.85); }
-    50% { opacity: 0.65; transform: scale(1.1); }
-}
-
-@media (max-width: 768px) {
-    .hero-motif { opacity: 0.25; }
-    .motif-gun, .motif-money, .motif-smoke { display: none; }
-}
-
-/* ── SILHOUETTE TRIO (Charlie's Angels-style, glitch RGB-split on lead figure) ── */
-.silhouette-cluster {
-    position: absolute;
-    inset: 0;
-    z-index: 2;
-    pointer-events: none;
-}
-
-.hero-silhouette-wrap {
-    position: absolute;
-    right: 4%;
-    bottom: 0;
-    height: 92%;
-    width: auto;
-}
-
-.hero-silhouette {
-    position: absolute;
-    top: 0;
-    right: 0;
-    height: 100%;
-    width: auto;
-}
-
-.hero-silhouette--base {
-    opacity: 0.85;
-    filter: drop-shadow(0 0 30px rgba(0,0,0,0.5));
-}
-
-.hero-silhouette--base path {
-    fill: #050403;
-}
-
-.hero-silhouette--red,
-.hero-silhouette--cyan {
-    opacity: 0;
-    mix-blend-mode: screen;
-}
-
-.hero-silhouette--red path { fill: #ff2d55; }
-.hero-silhouette--cyan path { fill: #22d3ee; }
-
-.hero-silhouette-wrap.glitching .hero-silhouette--base {
-    animation: glitchJitter 0.35s steps(2, end);
-}
-
-.hero-silhouette-wrap.glitching .hero-silhouette--red {
-    opacity: 0.6;
-    animation: glitchSliceA 0.35s steps(2, end);
-}
-
-.hero-silhouette-wrap.glitching .hero-silhouette--cyan {
-    opacity: 0.6;
-    animation: glitchSliceB 0.35s steps(2, end);
-}
-
-.hero-silhouette--flank {
-    position: absolute;
-    bottom: 0;
-    height: 74%;
-    width: auto;
-    opacity: 0.4;
-    fill: #050403;
-    filter: drop-shadow(0 0 20px rgba(0,0,0,0.4)) blur(0.4px);
-}
-
-.hero-silhouette--flank-left {
-    right: 22%;
-}
-
-.hero-silhouette--flank-right {
-    right: -6%;
-}
-
-@media (max-width: 768px) {
-    .hero-silhouette-wrap {
-        right: -2%;
-        height: 70%;
-    }
-    .hero-silhouette--base {
-        opacity: 0.55;
-    }
-    .hero-silhouette--flank {
-        display: none;
-    }
-}
-
-.hero-overlay {
-    position: absolute;
-    inset: 0;
-    background: linear-gradient(
-        to top,
-        rgba(8,10,10,1) 0%,
-        rgba(8,10,10,0.65) 40%,
-        rgba(8,10,10,0.2) 100%
-    );
-    z-index: 1;
-    pointer-events: none;
-}
-
-.hero-content {
-    position: relative;
-    z-index: 3;
-    max-width: 1200px;
-    width: 100%;
-    margin: 0 auto;
-    /* Text here (title, tagline, sector line) has no click behavior of its
-       own but otherwise sits above the hotspot layer and blocks clicks
-       wherever it visually overlaps a hotspot. Let clicks pass through and
-       re-enable only on the actually-interactive children below. */
-    pointer-events: none;
-}
-
-.hero-cta,
-.world-controls {
-    pointer-events: auto;
-}
-
-.hero-eyebrow {
-    font-family: 'VonderClean', sans-serif;
-    font-size: 11px;
-    letter-spacing: 5px;
-    text-transform: uppercase;
-    color: var(--gold);
-    margin-bottom: 20px;
-}
-
-/* sector / time-of-day label under the eyebrow */
-.hero-sector {
-    font-family: 'VonderClean', monospace;
-    font-size: 10px;
-    letter-spacing: 2px;
-    text-transform: uppercase;
-    color: var(--muted);
-    margin-top: -12px;
-    margin-bottom: 20px;
-    opacity: 0.75;
-}
-.hero-sector span { color: var(--gold); }
-
-.hero-title {
-    font-family: 'FadeAway', 'Vendetta', serif;
-    font-size: clamp(44px, 7vw, 110px);
-    line-height: 1.1;
-    color: var(--text);
-    text-shadow: 0 0 40px rgba(201,135,58,0.35);
-    margin-bottom: 28px;
-    letter-spacing: 2px;
-}
-
-.hero-tagline {
-    font-family: 'Rellive', sans-serif;
-    font-size: 18px;
-    color: var(--muted);
-    margin-bottom: 44px;
-    letter-spacing: 2px;
-}
-
-.hero-cta {
-    display: flex;
-    gap: 16px;
-    flex-wrap: wrap;
-}
-
-/* sound toggle + pulsebar / day-night scrubber */
-.world-controls {
-    display: flex;
-    align-items: center;
-    gap: 16px;
-    margin-top: 28px;
-    max-width: 480px;
-}
-
-.world-sound-btn {
-    padding: 10px 20px;
-    font-size: 10px;
-    white-space: nowrap;
-}
-
-.world-pulsebar {
-    flex: 1;
-    height: 36px;
-    display: flex;
-    align-items: flex-end;
-    gap: 2px;
-    padding: 5px 8px;
-    background: rgba(8,10,10,0.5);
-    border: 1px solid var(--border);
-    -webkit-backdrop-filter: blur(4px);
-    backdrop-filter: blur(4px);
-    cursor: ew-resize;
-    position: relative;
-    overflow: hidden;
-}
-
-.world-pulsebar .bar {
-    flex: 1;
-    background: linear-gradient(180deg, #ff2d55, #22d3ee);
-    min-height: 2px;
-    border-radius: 1px 1px 0 0;
-    opacity: 0.85;
-}
-
-.world-playhead {
-    position: absolute;
-    top: 0; bottom: 0;
-    width: 1px;
-    background: rgba(240,237,232,0.7);
-    pointer-events: none;
-}
-
-@media (max-width: 768px) {
-    .world-controls {
-        flex-direction: column;
-        align-items: stretch;
-        max-width: 100%;
-    }
-    .hero-sector { font-size: 9px; }
-    .hero-world-frame { inset: 12px; }
-    .hero-world-frame .corner { width: 14px; height: 14px; }
-    .hero-world-tag { font-size: 8px; left: 18px; }
-}
-
-.hero-scroll {
-    position: absolute;
-    bottom: 48px;
-    right: 48px;
-    z-index: 3;
-}
-
-.hero-scroll-line {
-    width: 1px;
-    height: 80px;
-    background: linear-gradient(to bottom, var(--gold), transparent);
-    animation: scrollLine 2.5s var(--ease) infinite;
-}
-
-@keyframes scrollLine {
-    0% { transform: scaleY(0); transform-origin: top; opacity: 1; }
-    50% { transform: scaleY(1); transform-origin: top; opacity: 1; }
-    51% { transform: scaleY(1); transform-origin: bottom; }
-    100% { transform: scaleY(0); transform-origin: bottom; opacity: 0; }
-}
 
 /* ── BUTTONS ── */
 .btn-primary {
@@ -1643,15 +983,10 @@ body {
 @media (max-width: 768px) {
     .nav { padding: 20px 24px; }
     .nav.scrolled { padding: 14px 24px; }
-    .nav-links { display: none; }
-    .nav-hamburger { display: flex; }
-    .hero { padding: 100px 24px 80px; }
-    .hero-scroll { display: none; }
     .section-inner { padding: 80px 24px; }
     .about-grid { grid-template-columns: 1fr; gap: 48px; }
     .contact-grid { grid-template-columns: 1fr 1fr; }
     .footer { padding: 24px; }
     .story-section { padding: 12vh 24px; gap: 32vh; }
     .music-card, .music-card-art { width: 260px; height: 260px; }
-    .cctv-tag { top: 16px; right: 16px; font-size: 9px; }
 }

@@ -5,6 +5,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Billy D. Willz</title>
     <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E%F0%9F%AA%BD%3C/text%3E%3C/svg%3E">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=DM+Sans:wght@400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="css/style.css">
     <link rel="stylesheet" href="css/vendor/phosphor/regular/style.css">
     <script src="js/vendor/three/three.min.js"></script>
@@ -18,37 +21,10 @@
 </head>
 <body>
 
-    <!-- SURVEILLANCE OVERLAYS -->
-    <div class="scanline-overlay"></div>
-    <div class="vignette-overlay"></div>
-    <div class="cctv-tag">
-        <span class="rec-dot"></span>
-        <span>REC</span>
-        <span id="cctv-timestamp">00:00:00</span>
-    </div>
-
-    <!-- TRACKING CURSOR -->
-    <div class="tracking-cursor" id="tracking-cursor">
-        <div class="reticle-bracket tl"></div>
-        <div class="reticle-bracket tr"></div>
-        <div class="reticle-bracket bl"></div>
-        <div class="reticle-bracket br"></div>
-        <div class="reticle-crosshair-h"></div>
-        <div class="reticle-crosshair-v"></div>
-        <div class="reticle-coords" id="reticle-coords">X:0000 Y:0000</div>
-    </div>
-
     <!-- NAV -->
     <nav class="nav" id="nav">
         <div class="nav-inner">
-            <a href="#home" class="nav-logo">🪽</a>
-            <ul class="nav-links">
-                <li><a href="#home" class="nav-link active">Home</a></li>
-                <li><a href="#music" class="nav-link">Music</a></li>
-                <li><a href="#story" class="nav-link">Story</a></li>
-                <li><a href="#about" class="nav-link">About</a></li>
-                <li><a href="#contact" class="nav-link">Contact</a></li>
-            </ul>
+            <a href="#home" class="nav-logo">Billy<span class="nav-logo-accent">D</span>.Willz</a>
             <button class="nav-hamburger" id="hamburger" aria-label="Menu">
                 <span></span><span></span><span></span>
             </button>
@@ -62,310 +38,38 @@
         </div>
     </nav>
 
-    <!-- HERO -->
+    <!-- HERO — painterly bleed-in figure, no copy: the image and the
+         restrained HUD layer carry the section entirely. -->
     <section class="hero" id="home">
-        <div class="hero-bg">
-            <div class="hero-bg-image" id="hero-bg-image"></div>
-            <div class="hero-bg-chan hero-bg-chan--r"></div>
-            <div class="hero-bg-chan hero-bg-chan--c"></div>
-            <div class="hero-bg-halftone"></div>
-            <div class="hero-world-frame">
-                <div class="corner tl"></div>
-                <div class="corner tr"></div>
-                <div class="corner bl"></div>
-                <div class="corner br"></div>
-                <span class="hero-world-tag"><span class="rec-dot-mini"></span>CAM 04 — BQE OVERWATCH</span>
+        <div class="hero-glow" aria-hidden="true"></div>
+
+        <div class="hero-figure" role="img" aria-label="A silhouetted figure in a fitted cap, dissolving into smoke against a dark sky"></div>
+
+        <!-- HUD — thin corner brackets anchored to the viewport, a small
+             pulsing REC tag, and a live timestamp. Restrained on purpose:
+             an atmospheric detail, not a dashboard. -->
+        <div class="hud" aria-hidden="true">
+            <span class="hud-corner hud-corner--tl"></span>
+            <span class="hud-corner hud-corner--tr"></span>
+            <span class="hud-corner hud-corner--bl"></span>
+            <span class="hud-corner hud-corner--br"></span>
+
+            <div class="hud-rec">
+                <span class="hud-rec-dot"></span>
+                <span class="hud-rec-label">REC</span>
             </div>
 
-            <!-- HOTSPOTS — clickable points over the city photo, positioned as
-                 percentages so they track roughly with the image on resize.
-                 Adjust the --x / --y custom properties per hotspot to fine-tune
-                 placement once you see it rendered. -->
-            <div class="hotspot-layer" id="hotspot-layer">
-                <button class="hotspot hotspot-music" data-kind="anchor" data-target="#music" data-preview="#music" aria-label="Go to Music">
-                    <span class="hotspot-ring"></span><span class="hotspot-dot"></span>
-                </button>
-                <button class="hotspot hotspot-story" data-kind="anchor" data-target="#story" data-preview="#story" aria-label="Go to Story">
-                    <span class="hotspot-ring"></span><span class="hotspot-dot"></span>
-                </button>
-                <button class="hotspot hotspot-about" data-kind="anchor" data-target="#about" data-preview="#about" aria-label="Go to About">
-                    <span class="hotspot-ring"></span><span class="hotspot-dot"></span>
-                </button>
-                <button class="hotspot hotspot-contact" data-kind="anchor" data-target="#contact" data-preview="#contact" aria-label="Go to Contact">
-                    <span class="hotspot-ring"></span><span class="hotspot-dot"></span>
-                </button>
-                <button class="hotspot hotspot-temp hotspot-youtube" data-kind="external" data-target="https://youtube.com/@PetrichorDreams" data-preview="youtube.com/@PetrichorDreams — TEMP LINK" aria-label="Watch on YouTube">
-                    <span class="hotspot-ring"></span><span class="hotspot-dot"></span>
-                </button>
-                <button class="hotspot hotspot-temp hotspot-instagram" data-kind="external" data-target="https://instagram.com" data-preview="instagram.com — TEMP LINK" aria-label="Visit Instagram">
-                    <span class="hotspot-ring"></span><span class="hotspot-dot"></span>
-                </button>
-            </div>
-
-            <!-- LINK PREVIEW BAR — CCTV/terminal style, mirrors a browser status bar -->
-            <div class="world-linkbar" id="world-linkbar">
-                <span class="world-linkbar-caret">&gt;</span>
-                <span class="world-linkbar-text" id="world-linkbar-text">STANDBY_</span>
-            </div>
+            <div class="hud-timestamp" id="hud-timestamp">CAM 01 — 00.00.0000 00:00:00</div>
         </div>
 
-        <!-- SYMBOLIC ICON MOTIFS — dreams / gunz / money / pray / smoke / stars -->
-        <div class="hero-motifs" aria-hidden="true">
-
-            <svg class="hero-motif motif-moon" viewBox="0 0 100 100"><path d="M65 20 A35 35 0 1 0 65 80 A25 25 0 1 1 65 20 Z" /></svg>
-
-            <svg class="hero-motif motif-gun" viewBox="0 0 100 60">
-                <path d="M10 35 L10 45 L60 45 L60 50 L70 50 L70 45 L85 45 L85 35 L75 35 L75 20 L60 20 L60 35 L40 35 L40 25 L20 25 L20 35 Z" />
-            </svg>
-
-            <svg class="hero-motif motif-money" viewBox="0 0 100 100">
-                <circle cx="50" cy="50" r="42" fill="none" stroke="currentColor" stroke-width="5" />
-                <text x="50" y="67" font-size="52" text-anchor="middle" fill="currentColor" font-family="serif">$</text>
-            </svg>
-
-            <svg class="hero-motif motif-pray" viewBox="0 0 100 100">
-                <path d="M50 8 C34 18 29 40 31 62 C32 73 38 87 45 92 L50 80 L55 92 C62 87 68 73 69 62 C71 40 66 18 50 8 Z" />
-                <line x1="50" y1="14" x2="50" y2="86" stroke="var(--bg)" stroke-width="2" />
-            </svg>
-
-            <svg class="hero-motif motif-smoke" viewBox="0 0 100 100">
-                <g fill="currentColor">
-                    <circle cx="50" cy="55" r="8" />
-                    <ellipse cx="50" cy="35" rx="8" ry="14" />
-                    <ellipse cx="50" cy="75" rx="8" ry="14" />
-                    <ellipse cx="30" cy="55" rx="14" ry="8" />
-                    <ellipse cx="70" cy="55" rx="14" ry="8" />
-                </g>
-                <path d="M50 18 C56 8 44 2 50 -8" stroke="currentColor" stroke-width="2" fill="none" opacity="0.55" />
-            </svg>
-
-            <svg class="hero-motif motif-spark spark-1" viewBox="0 0 100 100"><path d="M50 5 C52 35 65 48 95 50 C65 52 52 65 50 95 C48 65 35 52 5 50 C35 48 48 35 50 5 Z" /></svg>
-            <svg class="hero-motif motif-spark spark-2" viewBox="0 0 100 100"><path d="M50 5 C52 35 65 48 95 50 C65 52 52 65 50 95 C48 65 35 52 5 50 C35 48 48 35 50 5 Z" /></svg>
-            <svg class="hero-motif motif-spark spark-3" viewBox="0 0 100 100"><path d="M50 5 C52 35 65 48 95 50 C65 52 52 65 50 95 C48 65 35 52 5 50 C35 48 48 35 50 5 Z" /></svg>
-
-        </div>
-
-        <!-- SILHOUETTE TRIO — Charlie's Angels-style formation -->
-        <div class="silhouette-cluster">
-
-            <svg class="hero-silhouette hero-silhouette--flank hero-silhouette--flank-left" viewBox="0 0 300 600" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-                <path d="M150 60 C140 60 132 68 132 80 C132 90 138 97 145 100 C130 108 120 122 118 140 C116 158 122 175 130 190 C118 195 105 205 98 220 C88 240 92 265 100 285 C92 300 82 320 78 345 C74 375 80 405 92 430 C85 450 80 475 82 500 C84 525 95 545 110 560 C108 565 106 572 108 578 C111 586 120 590 128 587 C134 584 137 578 136 572 C145 578 156 580 166 577 C168 583 174 588 182 587 C190 586 196 579 194 571 C192 564 185 560 178 561 C188 542 194 518 192 494 C190 470 180 448 168 432 C176 408 178 380 170 355 C165 338 156 323 145 312 C152 295 155 275 150 258 C146 244 138 232 128 224 C140 214 148 200 150 185 C152 200 160 214 172 224 C162 232 154 244 150 258 C145 275 148 295 155 312 C144 323 135 338 130 355 C122 380 124 408 132 432 C120 448 110 470 108 494 C106 518 112 542 122 561 C115 560 108 564 106 571 C104 579 110 586 118 587 C126 588 132 583 134 577 C144 580 155 578 164 572 C163 578 166 584 172 587 C180 590 189 586 192 578 C194 572 192 565 190 560 C205 545 216 525 218 500 C220 475 215 450 208 430 C220 405 226 375 222 345 C218 320 208 300 200 285 C208 265 212 240 202 220 C195 205 182 195 170 190 C178 175 184 158 182 140 C180 122 170 108 155 100 C162 97 168 90 168 80 C168 68 160 60 150 60 Z" />
-            </svg>
-
-            <svg class="hero-silhouette hero-silhouette--flank hero-silhouette--flank-right" viewBox="0 0 300 600" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-                <path d="M150 60 C140 60 132 68 132 80 C132 90 138 97 145 100 C130 108 120 122 118 140 C116 158 122 175 130 190 C118 195 105 205 98 220 C88 240 92 265 100 285 C92 300 82 320 78 345 C74 375 80 405 92 430 C85 450 80 475 82 500 C84 525 95 545 110 560 C108 565 106 572 108 578 C111 586 120 590 128 587 C134 584 137 578 136 572 C145 578 156 580 166 577 C168 583 174 588 182 587 C190 586 196 579 194 571 C192 564 185 560 178 561 C188 542 194 518 192 494 C190 470 180 448 168 432 C176 408 178 380 170 355 C165 338 156 323 145 312 C152 295 155 275 150 258 C146 244 138 232 128 224 C140 214 148 200 150 185 C152 200 160 214 172 224 C162 232 154 244 150 258 C145 275 148 295 155 312 C144 323 135 338 130 355 C122 380 124 408 132 432 C120 448 110 470 108 494 C106 518 112 542 122 561 C115 560 108 564 106 571 C104 579 110 586 118 587 C126 588 132 583 134 577 C144 580 155 578 164 572 C163 578 166 584 172 587 C180 590 189 586 192 578 C194 572 192 565 190 560 C205 545 216 525 218 500 C220 475 215 450 208 430 C220 405 226 375 222 345 C218 320 208 300 200 285 C208 265 212 240 202 220 C195 205 182 195 170 190 C178 175 184 158 182 140 C180 122 170 108 155 100 C162 97 168 90 168 80 C168 68 160 60 150 60 Z" />
-            </svg>
-
-            <div class="hero-silhouette-wrap" id="glitch-silhouette">
-                <svg class="hero-silhouette hero-silhouette--base" viewBox="0 0 300 600" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-                    <path d="
-                        M 150 60
-                        C 140 60 132 68 132 80
-                        C 132 90 138 97 145 100
-                        C 130 108 120 122 118 140
-                        C 116 158 122 175 130 190
-                        C 118 195 105 205 98 220
-                        C 88 240 92 265 100 285
-                        C 92 300 82 320 78 345
-                        C 74 375 80 405 92 430
-                        C 85 450 80 475 82 500
-                        C 84 525 95 545 110 560
-                        C 108 565 106 572 108 578
-                        C 111 586 120 590 128 587
-                        C 134 584 137 578 136 572
-                        C 145 578 156 580 166 577
-                        C 168 583 174 588 182 587
-                        C 190 586 196 579 194 571
-                        C 192 564 185 560 178 561
-                        C 188 542 194 518 192 494
-                        C 190 470 180 448 168 432
-                        C 176 408 178 380 170 355
-                        C 165 338 156 323 145 312
-                        C 152 295 155 275 150 258
-                        C 146 244 138 232 128 224
-                        C 140 214 148 200 150 185
-                        C 152 200 160 214 172 224
-                        C 162 232 154 244 150 258
-                        C 145 275 148 295 155 312
-                        C 144 323 135 338 130 355
-                        C 122 380 124 408 132 432
-                        C 120 448 110 470 108 494
-                        C 106 518 112 542 122 561
-                        C 115 560 108 564 106 571
-                        C 104 579 110 586 118 587
-                        C 126 588 132 583 134 577
-                        C 144 580 155 578 164 572
-                        C 163 578 166 584 172 587
-                        C 180 590 189 586 192 578
-                        C 194 572 192 565 190 560
-                        C 205 545 216 525 218 500
-                        C 220 475 215 450 208 430
-                        C 220 405 226 375 222 345
-                        C 218 320 208 300 200 285
-                        C 208 265 212 240 202 220
-                        C 195 205 182 195 170 190
-                        C 178 175 184 158 182 140
-                        C 180 122 170 108 155 100
-                        C 162 97 168 90 168 80
-                        C 168 68 160 60 150 60
-                        Z" />
-                    <path class="hero-silhouette-arm" d="
-                        M 150 100
-                        C 165 95 178 85 186 70
-                        C 192 58 194 44 190 32
-                        C 188 26 182 24 178 28
-                        C 175 31 175 36 178 40
-                        C 182 50 180 62 172 72
-                        C 166 80 158 86 150 90
-                        Z" />
-                </svg>
-
-                <svg class="hero-silhouette hero-silhouette--red" viewBox="0 0 300 600" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-                    <path d="
-                        M 150 60
-                        C 140 60 132 68 132 80
-                        C 132 90 138 97 145 100
-                        C 130 108 120 122 118 140
-                        C 116 158 122 175 130 190
-                        C 118 195 105 205 98 220
-                        C 88 240 92 265 100 285
-                        C 92 300 82 320 78 345
-                        C 74 375 80 405 92 430
-                        C 85 450 80 475 82 500
-                        C 84 525 95 545 110 560
-                        C 108 565 106 572 108 578
-                        C 111 586 120 590 128 587
-                        C 134 584 137 578 136 572
-                        C 145 578 156 580 166 577
-                        C 168 583 174 588 182 587
-                        C 190 586 196 579 194 571
-                        C 192 564 185 560 178 561
-                        C 188 542 194 518 192 494
-                        C 190 470 180 448 168 432
-                        C 176 408 178 380 170 355
-                        C 165 338 156 323 145 312
-                        C 152 295 155 275 150 258
-                        C 146 244 138 232 128 224
-                        C 140 214 148 200 150 185
-                        C 152 200 160 214 172 224
-                        C 162 232 154 244 150 258
-                        C 145 275 148 295 155 312
-                        C 144 323 135 338 130 355
-                        C 122 380 124 408 132 432
-                        C 120 448 110 470 108 494
-                        C 106 518 112 542 122 561
-                        C 115 560 108 564 106 571
-                        C 104 579 110 586 118 587
-                        C 126 588 132 583 134 577
-                        C 144 580 155 578 164 572
-                        C 163 578 166 584 172 587
-                        C 180 590 189 586 192 578
-                        C 194 572 192 565 190 560
-                        C 205 545 216 525 218 500
-                        C 220 475 215 450 208 430
-                        C 220 405 226 375 222 345
-                        C 218 320 208 300 200 285
-                        C 208 265 212 240 202 220
-                        C 195 205 182 195 170 190
-                        C 178 175 184 158 182 140
-                        C 180 122 170 108 155 100
-                        C 162 97 168 90 168 80
-                        C 168 68 160 60 150 60
-                        Z" />
-                    <path class="hero-silhouette-arm" d="
-                        M 150 100
-                        C 165 95 178 85 186 70
-                        C 192 58 194 44 190 32
-                        C 188 26 182 24 178 28
-                        C 175 31 175 36 178 40
-                        C 182 50 180 62 172 72
-                        C 166 80 158 86 150 90
-                        Z" />
-                </svg>
-
-                <svg class="hero-silhouette hero-silhouette--cyan" viewBox="0 0 300 600" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-                    <path d="
-                        M 150 60
-                        C 140 60 132 68 132 80
-                        C 132 90 138 97 145 100
-                        C 130 108 120 122 118 140
-                        C 116 158 122 175 130 190
-                        C 118 195 105 205 98 220
-                        C 88 240 92 265 100 285
-                        C 92 300 82 320 78 345
-                        C 74 375 80 405 92 430
-                        C 85 450 80 475 82 500
-                        C 84 525 95 545 110 560
-                        C 108 565 106 572 108 578
-                        C 111 586 120 590 128 587
-                        C 134 584 137 578 136 572
-                        C 145 578 156 580 166 577
-                        C 168 583 174 588 182 587
-                        C 190 586 196 579 194 571
-                        C 192 564 185 560 178 561
-                        C 188 542 194 518 192 494
-                        C 190 470 180 448 168 432
-                        C 176 408 178 380 170 355
-                        C 165 338 156 323 145 312
-                        C 152 295 155 275 150 258
-                        C 146 244 138 232 128 224
-                        C 140 214 148 200 150 185
-                        C 152 200 160 214 172 224
-                        C 162 232 154 244 150 258
-                        C 145 275 148 295 155 312
-                        C 144 323 135 338 130 355
-                        C 122 380 124 408 132 432
-                        C 120 448 110 470 108 494
-                        C 106 518 112 542 122 561
-                        C 115 560 108 564 106 571
-                        C 104 579 110 586 118 587
-                        C 126 588 132 583 134 577
-                        C 144 580 155 578 164 572
-                        C 163 578 166 584 172 587
-                        C 180 590 189 586 192 578
-                        C 194 572 192 565 190 560
-                        C 205 545 216 525 218 500
-                        C 220 475 215 450 208 430
-                        C 220 405 226 375 222 345
-                        C 218 320 208 300 200 285
-                        C 208 265 212 240 202 220
-                        C 195 205 182 195 170 190
-                        C 178 175 184 158 182 140
-                        C 180 122 170 108 155 100
-                        C 162 97 168 90 168 80
-                        C 168 68 160 60 150 60
-                        Z" />
-                    <path class="hero-silhouette-arm" d="
-                        M 150 100
-                        C 165 95 178 85 186 70
-                        C 192 58 194 44 190 32
-                        C 188 26 182 24 178 28
-                        C 175 31 175 36 178 40
-                        C 182 50 180 62 172 72
-                        C 166 80 158 86 150 90
-                        Z" />
-                </svg>
-            </div>
-
-        </div>
-
-        <div class="hero-overlay"></div>
-        <div class="hero-content">
-            <p class="hero-eyebrow">New York, NY</p>
-            <p class="hero-sector">SECTOR: BQE — BK/QNS BORDER · <span id="world-tod">NIGHT</span></p>
-            <h1 class="hero-title glitch-text" id="glitch-title" data-text="Billy D. Willz">Billy D.<br>Willz</h1>
-            <p class="hero-tagline">Live Now. Die Later</p>
-            <div class="hero-cta">
-                <a href="#music" class="btn-primary">Hear The Music</a>
-                <a href="#about" class="btn-ghost">The Story</a>
-            </div>
-            <div class="world-controls">
-                <button id="world-sound-toggle" class="btn-ghost world-sound-btn">◉ Sound Off</button>
-                <div class="world-pulsebar" id="world-pulsebar"></div>
-            </div>
-        </div>
-        <div class="hero-scroll">
-            <div class="hero-scroll-line"></div>
+        <!-- CROSSHAIR CURSOR — a focus-reticle standing in for the native
+             cursor while inside the hero, part of the same HUD system. -->
+        <div class="hero-cursor" id="hero-cursor" aria-hidden="true">
+            <span class="hero-cursor-ring"></span>
+            <span class="hero-cursor-tick hero-cursor-tick--t"></span>
+            <span class="hero-cursor-tick hero-cursor-tick--r"></span>
+            <span class="hero-cursor-tick hero-cursor-tick--b"></span>
+            <span class="hero-cursor-tick hero-cursor-tick--l"></span>
         </div>
     </section>
 
@@ -629,8 +333,7 @@
         // ── NAV SCROLL STATE ──
         const nav = document.getElementById('nav');
         const sections = document.querySelectorAll('section[id]');
-        const navLinks = document.querySelectorAll('.nav-link');
-        let lastActiveSection = 'home';
+        const navLinks = document.querySelectorAll('.nav-mobile-link');
 
         lenis.on('scroll', ({ scroll }) => {
             nav.classList.toggle('scrolled', scroll > 50);
@@ -641,14 +344,6 @@
                     current = section.getAttribute('id');
                 }
             });
-
-            // one glitch pulse per section transition, so scrolling reads as
-            // moving through one continuous glitching world rather than
-            // separate sections with the hero effect walled off inside it
-            if (current && current !== lastActiveSection) {
-                lastActiveSection = current;
-                pulseGlitch();
-            }
 
             navLinks.forEach(link => {
                 link.classList.remove('active');
@@ -697,67 +392,51 @@
             storyObserver.observe(beat);
         });
 
-        // ── CCTV TIMESTAMP ──
-        const timestampEl = document.getElementById('cctv-timestamp');
-        function updateTimestamp() {
+        // ── HERO HUD TIMESTAMP ──
+        const hudTimestampEl = document.getElementById('hud-timestamp');
+        function updateHudTimestamp() {
             const now = new Date();
+            const mm = String(now.getMonth() + 1).padStart(2, '0');
+            const dd = String(now.getDate()).padStart(2, '0');
+            const yyyy = now.getFullYear();
             const hh = String(now.getHours()).padStart(2, '0');
-            const mm = String(now.getMinutes()).padStart(2, '0');
+            const mi = String(now.getMinutes()).padStart(2, '0');
             const ss = String(now.getSeconds()).padStart(2, '0');
-            timestampEl.textContent = `${hh}:${mm}:${ss}`;
+            hudTimestampEl.textContent = `CAM 01 — ${mm}.${dd}.${yyyy} ${hh}:${mi}:${ss}`;
         }
-        updateTimestamp();
-        setInterval(updateTimestamp, 1000);
+        updateHudTimestamp();
+        setInterval(updateHudTimestamp, 1000);
 
-        // ── GLITCH TEXT + SILHOUETTE + WORLD (synced random trigger) ──
-        const glitchTitle = document.getElementById('glitch-title');
-        const glitchSilhouette = document.getElementById('glitch-silhouette');
-        const heroBg = document.querySelector('.hero-bg');
+        // ── HERO CROSSHAIR CURSOR — scoped to the hero only; the native
+        // cursor is hidden there (fine pointers only) and this reticle
+        // follows the mouse in its place. ──
+        const heroSection = document.getElementById('home');
+        const heroCursor = document.getElementById('hero-cursor');
+        if (heroSection && heroCursor && window.matchMedia('(pointer: fine)').matches) {
+            let hcTargetX = 0, hcTargetY = 0, hcX = 0, hcY = 0;
 
-        function pulseGlitch() {
-            glitchTitle.classList.add('glitching');
-            glitchSilhouette.classList.add('glitching');
-            heroBg.classList.add('glitching');
-            window.dispatchEvent(new Event('billyd-glitch'));
-            setTimeout(() => {
-                glitchTitle.classList.remove('glitching');
-                glitchSilhouette.classList.remove('glitching');
-                heroBg.classList.remove('glitching');
-            }, 350);
+            heroSection.addEventListener('mouseenter', () => {
+                heroSection.classList.add('hero-cursor-active');
+                heroCursor.classList.add('active');
+            });
+            heroSection.addEventListener('mouseleave', () => {
+                heroSection.classList.remove('hero-cursor-active');
+                heroCursor.classList.remove('active');
+            });
+            heroSection.addEventListener('mousemove', (e) => {
+                const rect = heroSection.getBoundingClientRect();
+                hcTargetX = e.clientX - rect.left;
+                hcTargetY = e.clientY - rect.top;
+            });
+
+            function heroCursorLoop() {
+                hcX += (hcTargetX - hcX) * 0.25;
+                hcY += (hcTargetY - hcY) * 0.25;
+                heroCursor.style.transform = `translate3d(${hcX}px, ${hcY}px, 0)`;
+                requestAnimationFrame(heroCursorLoop);
+            }
+            heroCursorLoop();
         }
-
-        function triggerGlitch() {
-            pulseGlitch();
-            const nextDelay = 2500 + Math.random() * 4000;
-            setTimeout(triggerGlitch, nextDelay);
-        }
-        setTimeout(triggerGlitch, 2000);
-
-        // ── TRACKING CURSOR (reticle + coordinates) ──
-        const trackingCursor = document.getElementById('tracking-cursor');
-        const reticleCoords = document.getElementById('reticle-coords');
-        let trx = 0, try_ = 0, ttx = 0, tty = 0;
-
-        window.addEventListener('mousemove', (e) => {
-            ttx = e.clientX;
-            tty = e.clientY;
-            const xStr = String(Math.round(e.clientX)).padStart(4, '0');
-            const yStr = String(Math.round(e.clientY)).padStart(4, '0');
-            reticleCoords.textContent = `X:${xStr} Y:${yStr}`;
-        });
-
-        function trackingLoop() {
-            trx += (ttx - trx) * 0.25;
-            try_ += (tty - try_) * 0.25;
-            trackingCursor.style.transform = `translate3d(${trx}px, ${try_}px, 0)`;
-            requestAnimationFrame(trackingLoop);
-        }
-        trackingLoop();
-
-        document.querySelectorAll('a, button, .music-card').forEach(el => {
-            el.addEventListener('mouseenter', () => trackingCursor.classList.add('tracking-lock'));
-            el.addEventListener('mouseleave', () => trackingCursor.classList.remove('tracking-lock'));
-        });
 
         // ── DRAGGABLE CAROUSEL ──
         const track = document.getElementById('carousel-track');
@@ -1182,166 +861,6 @@
             }
             smoothLoop();
         }
-    </script>
-
-    <script>
-    // ══════════════════════════════════════════════════
-    // HERO WORLD — static photo background + clickable hotspots.
-    // Replaces the earlier live Three.js city (removed entirely —
-    // no WebGL, no async model loading, nothing that can crash
-    // or context-lose). The CCTV/glitch/RGB-split/halftone overlay
-    // system is untouched; it just now sits over a photo instead
-    // of a canvas.
-    // Background image expected at: assets/images/billydwillz-city.jpg
-    // ══════════════════════════════════════════════════
-    (function(){
-        'use strict';
-
-        const heroBgEl = document.querySelector('.hero-bg');
-        const linkbar = document.getElementById('world-linkbar');
-        const linkbarText = document.getElementById('world-linkbar-text');
-        const trackingCursorEl = document.getElementById('tracking-cursor');
-        const hotspots = Array.from(document.querySelectorAll('.hotspot'));
-
-        function setLinkbar(hotspot){
-            if(!linkbar) return;
-            if(!hotspot){
-                linkbar.classList.remove('visible');
-                linkbarText.textContent = 'STANDBY_';
-                return;
-            }
-            const kind = hotspot.dataset.kind;
-            const preview = hotspot.dataset.preview;
-            linkbar.classList.add('visible');
-            linkbar.classList.toggle('linkbar-temp', hotspot.classList.contains('hotspot-temp'));
-            linkbarText.textContent = (kind === 'anchor'
-                ? `TARGET_LOCKED: ${preview}`
-                : `EXT_LINK: ${preview}`) + '_';
-        }
-
-        hotspots.forEach(hotspot => {
-            hotspot.addEventListener('mouseenter', () => {
-                setLinkbar(hotspot);
-                if(trackingCursorEl) trackingCursorEl.classList.add('tracking-lock');
-            });
-            hotspot.addEventListener('mouseleave', () => {
-                setLinkbar(null);
-                if(trackingCursorEl) trackingCursorEl.classList.remove('tracking-lock');
-            });
-            hotspot.addEventListener('click', (e) => {
-                e.preventDefault();
-                const kind = hotspot.dataset.kind;
-                const target = hotspot.dataset.target;
-                if(kind === 'anchor'){
-                    const targetEl = document.querySelector(target);
-                    if(targetEl && typeof lenis !== 'undefined') lenis.scrollTo(targetEl, { duration: 1.2 });
-                    else if(targetEl) targetEl.scrollIntoView({ behavior:'smooth' });
-                } else {
-                    window.open(target, '_blank', 'noopener');
-                }
-            });
-        });
-
-        // glitch tie-in: hotspot rings flash red/cyan in sync with the
-        // existing billyd-glitch event the title/silhouette already use
-        window.addEventListener('billyd-glitch', () => {
-            hotspots.forEach(h => {
-                h.classList.add('hotspot-flash');
-                setTimeout(() => h.classList.remove('hotspot-flash'), 300);
-            });
-        });
-
-        // ── AMBIENT AUDIO — rain + distant city hum, no Three.js dependency ──
-        const soundBtn = document.getElementById('world-sound-toggle');
-        const pulsebar = document.getElementById('world-pulsebar');
-        const BAR_COUNT = 40;
-        const bars = [];
-        if(pulsebar){
-            for(let i=0;i<BAR_COUNT;i++){ const el=document.createElement('div'); el.className='bar'; pulsebar.appendChild(el); bars.push(el); }
-        }
-        function idleBars(){
-            requestAnimationFrame(idleBars);
-            if(window.__worldAudio && window.__worldAudio.analyser){
-                const freqData = window.__worldAudio.freqData;
-                window.__worldAudio.analyser.getByteFrequencyData(freqData);
-                const step = Math.floor(freqData.length/BAR_COUNT)||1;
-                bars.forEach((b,i)=>{
-                    const v = freqData[i*step]/255;
-                    b.style.height=(3+v*22)+'px'; b.style.opacity=0.5+v*0.5;
-                });
-            } else {
-                const time = performance.now()/1000;
-                bars.forEach((b,i) => {
-                    const v = (Math.sin(time*1.4+i*0.4)+1)/2;
-                    b.style.height = (3+v*18)+'px'; b.style.opacity = 0.35+v*0.3;
-                });
-            }
-        }
-        idleBars();
-
-        let audioStarted = false;
-        function initAudio(){
-            const ctx = new (window.AudioContext||window.webkitAudioContext)();
-            const master = ctx.createGain(); master.gain.value = 0;
-            const analyser = ctx.createAnalyser(); analyser.fftSize = 128;
-            master.connect(analyser); analyser.connect(ctx.destination);
-
-            const bufferSize = ctx.sampleRate*2;
-            const noiseBuffer = ctx.createBuffer(1,bufferSize,ctx.sampleRate);
-            const data = noiseBuffer.getChannelData(0);
-            for(let i=0;i<bufferSize;i++) data[i] = Math.random()*2-1;
-
-            // low rumble — distant highway/city bed
-            const hum = ctx.createBufferSource(); hum.buffer=noiseBuffer; hum.loop=true;
-            const humFilter = ctx.createBiquadFilter(); humFilter.type='lowpass'; humFilter.frequency.value=260;
-            const humGain = ctx.createGain(); humGain.gain.value=0.09;
-            hum.connect(humFilter); humFilter.connect(humGain); humGain.connect(master); hum.start();
-
-            // rain
-            const rainSrc = ctx.createBufferSource(); rainSrc.buffer=noiseBuffer; rainSrc.loop=true;
-            const rainBand = ctx.createBiquadFilter(); rainBand.type='bandpass'; rainBand.frequency.value=1600; rainBand.Q.value=0.6;
-            const rainGain = ctx.createGain(); rainGain.gain.value=0.06;
-            rainSrc.connect(rainBand); rainBand.connect(rainGain); rainGain.connect(master); rainSrc.start();
-
-            // occasional passing-car whoosh
-            function scheduleWhoosh(){
-                const delay = 3000+Math.random()*4000;
-                setTimeout(()=>{
-                    const src = ctx.createBufferSource(); src.buffer=noiseBuffer;
-                    const bp = ctx.createBiquadFilter(); bp.type='bandpass'; bp.frequency.value=500; bp.Q.value=0.8;
-                    const g = ctx.createGain(); g.gain.value=0.0001;
-                    g.gain.linearRampToValueAtTime(0.05, ctx.currentTime+0.4);
-                    g.gain.exponentialRampToValueAtTime(0.0001, ctx.currentTime+1.2);
-                    src.connect(bp); bp.connect(g); g.connect(master); src.start(); src.stop(ctx.currentTime+1.3);
-                    scheduleWhoosh();
-                }, delay);
-            }
-            scheduleWhoosh();
-
-            window.addEventListener('billyd-glitch', () => {
-                const osc = ctx.createOscillator(); osc.type='square'; osc.frequency.value=800+Math.random()*600;
-                const g = ctx.createGain(); g.gain.value=0.0001;
-                g.gain.linearRampToValueAtTime(0.05, ctx.currentTime+0.01);
-                g.gain.exponentialRampToValueAtTime(0.0001, ctx.currentTime+0.15);
-                osc.connect(g); g.connect(master); osc.start(); osc.stop(ctx.currentTime+0.2);
-            });
-
-            master.gain.linearRampToValueAtTime(1, ctx.currentTime+1.5);
-            window.__worldAudio = { ctx, master, analyser, freqData: new Uint8Array(analyser.frequencyBinCount) };
-        }
-
-        if(soundBtn){
-            soundBtn.addEventListener('click', () => {
-                if(!audioStarted){ initAudio(); audioStarted=true; soundBtn.textContent='◉ Sound On'; }
-                else {
-                    const a = window.__worldAudio;
-                    const isOn = a.master.gain.value > 0.5;
-                    a.master.gain.linearRampToValueAtTime(isOn?0:1, a.ctx.currentTime+0.8);
-                    soundBtn.textContent = isOn ? '◉ Sound Off' : '◉ Sound On';
-                }
-            });
-        }
-    })();
     </script>
 
 </body>
