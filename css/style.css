@@ -231,9 +231,11 @@ body {
        ::after overlay below is the guaranteed fallback that does the
        same fade by painting the page's own background color over the
        image's edges, so the bleed-in holds even where masking silently
-       no-ops. */
-    -webkit-mask-image: radial-gradient(ellipse 68% 72% at 50% 40%, #000 40%, transparent 95%);
-    mask-image: radial-gradient(ellipse 68% 72% at 50% 40%, #000 40%, transparent 95%);
+       no-ops. Center sits near the box's true middle and the opaque
+       plateau runs to ~78% radius so the cap, smoke mass, and shoulders
+       all render at full clarity — only the outer ~20% edge band fades. */
+    -webkit-mask-image: radial-gradient(ellipse closest-side at 50% 46%, #000 78%, transparent 100%);
+    mask-image: radial-gradient(ellipse closest-side at 50% 46%, #000 78%, transparent 100%);
     -webkit-mask-repeat: no-repeat;
     mask-repeat: no-repeat;
 }
@@ -243,7 +245,7 @@ body {
     position: absolute;
     inset: 0;
     pointer-events: none;
-    background: radial-gradient(ellipse closest-side at 50% 40%, transparent 0%, transparent 25%, var(--hf-deep) 100%);
+    background: radial-gradient(ellipse closest-side at 50% 46%, transparent 0%, transparent 78%, var(--hf-deep) 100%);
 }
 
 /* ── HUD — thin red-accent corner brackets anchored to the viewport,
@@ -306,6 +308,54 @@ body {
     color: var(--hf-muted);
     white-space: nowrap;
 }
+
+/* ── CROSSHAIR CURSOR — stands in for the native pointer inside the
+   hero, part of the same restrained HUD system (red ring, grey-blue
+   ticks). Hidden until the mouse actually enters the hero. ── */
+@media (pointer: fine) {
+    .hero.hero-cursor-active,
+    .hero.hero-cursor-active a,
+    .hero.hero-cursor-active button {
+        cursor: none;
+    }
+}
+
+.hero-cursor {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 0;
+    height: 0;
+    z-index: 5;
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity 0.2s var(--ease);
+    will-change: transform;
+}
+
+.hero-cursor.active {
+    opacity: 1;
+}
+
+.hero-cursor-ring {
+    position: absolute;
+    top: -9px;
+    left: -9px;
+    width: 18px;
+    height: 18px;
+    border: 1px solid var(--hf-red);
+    border-radius: 50%;
+}
+
+.hero-cursor-tick {
+    position: absolute;
+    background: var(--hf-muted);
+}
+
+.hero-cursor-tick--t { top: -19px; left: -0.5px; width: 1px; height: 7px; }
+.hero-cursor-tick--b { top: 12px; left: -0.5px; width: 1px; height: 7px; }
+.hero-cursor-tick--l { top: -0.5px; left: -19px; width: 7px; height: 1px; }
+.hero-cursor-tick--r { top: -0.5px; left: 12px; width: 7px; height: 1px; }
 
 @media (max-width: 768px) {
     .hero-figure { width: 94vw; }

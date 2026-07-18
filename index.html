@@ -61,6 +61,16 @@
 
             <div class="hud-timestamp" id="hud-timestamp">CAM 01 — 00.00.0000 00:00:00</div>
         </div>
+
+        <!-- CROSSHAIR CURSOR — a focus-reticle standing in for the native
+             cursor while inside the hero, part of the same HUD system. -->
+        <div class="hero-cursor" id="hero-cursor" aria-hidden="true">
+            <span class="hero-cursor-ring"></span>
+            <span class="hero-cursor-tick hero-cursor-tick--t"></span>
+            <span class="hero-cursor-tick hero-cursor-tick--r"></span>
+            <span class="hero-cursor-tick hero-cursor-tick--b"></span>
+            <span class="hero-cursor-tick hero-cursor-tick--l"></span>
+        </div>
     </section>
 
     <!-- MUSIC — FILTER BAR + DRAGGABLE CAROUSEL -->
@@ -396,6 +406,37 @@
         }
         updateHudTimestamp();
         setInterval(updateHudTimestamp, 1000);
+
+        // ── HERO CROSSHAIR CURSOR — scoped to the hero only; the native
+        // cursor is hidden there (fine pointers only) and this reticle
+        // follows the mouse in its place. ──
+        const heroSection = document.getElementById('home');
+        const heroCursor = document.getElementById('hero-cursor');
+        if (heroSection && heroCursor && window.matchMedia('(pointer: fine)').matches) {
+            let hcTargetX = 0, hcTargetY = 0, hcX = 0, hcY = 0;
+
+            heroSection.addEventListener('mouseenter', () => {
+                heroSection.classList.add('hero-cursor-active');
+                heroCursor.classList.add('active');
+            });
+            heroSection.addEventListener('mouseleave', () => {
+                heroSection.classList.remove('hero-cursor-active');
+                heroCursor.classList.remove('active');
+            });
+            heroSection.addEventListener('mousemove', (e) => {
+                const rect = heroSection.getBoundingClientRect();
+                hcTargetX = e.clientX - rect.left;
+                hcTargetY = e.clientY - rect.top;
+            });
+
+            function heroCursorLoop() {
+                hcX += (hcTargetX - hcX) * 0.25;
+                hcY += (hcTargetY - hcY) * 0.25;
+                heroCursor.style.transform = `translate3d(${hcX}px, ${hcY}px, 0)`;
+                requestAnimationFrame(heroCursorLoop);
+            }
+            heroCursorLoop();
+        }
 
         // ── DRAGGABLE CAROUSEL ──
         const track = document.getElementById('carousel-track');
