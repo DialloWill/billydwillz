@@ -201,28 +201,6 @@
         </div>
     </section>
 
-    <!-- STORYTELLING SECTION -->
-    <section class="story-section" id="story">
-        <div class="story-beat" data-beat>
-            <p class="story-line">This is not a beginning.</p>
-        </div>
-        <div class="story-beat" data-beat>
-            <p class="story-line">This is a continuation.</p>
-        </div>
-        <div class="story-beat" data-beat>
-            <p class="story-line">The first draft was Initiation.</p>
-        </div>
-        <div class="story-beat" data-beat>
-            <p class="story-line">Hazing for Dedication.</p>
-        </div>
-        <div class="story-beat" data-beat>
-            <p class="story-line story-accent">Iron Never Bends.</p>
-        </div>
-        <div class="story-beat" data-beat>
-            <p class="story-line">The story never ends.</p>
-        </div>
-    </section>
-
     <!-- ABOUT -->
     <section class="about-section" id="about">
         <div class="about-bg"></div>
@@ -236,7 +214,7 @@
                 <div class="about-text">
                     <p class="about-body">Some stories dont need to be told all at once.</p>
                     <p class="about-body">This one comes through in fragments - a beat, a haze, a line that hits different at 2am.</p>
-                    <p class="about-quote">Life Starts at the End of Our Comfort Zone. I think you should just Go for it Babe. Put away the blame and Put on the Leather in the Rain. To Live Now and Die Another Day.</p>
+                    <p class="about-quote">I think you should just Go for it Babe. Put away the blame and Put on the Leather in the Rain.</p>
                 </div>
                 <div class="about-stats">
                     <div class="about-stat">
@@ -381,16 +359,6 @@
             observer.observe(el);
         });
 
-        // ── STORYTELLING SCROLL REVEAL ──
-        const storyObserver = new IntersectionObserver((entries) => {
-            entries.forEach(entry => {
-                entry.target.classList.toggle('visible', entry.isIntersecting);
-            });
-        }, { threshold: 0.6 });
-
-        document.querySelectorAll('[data-beat]').forEach(beat => {
-            storyObserver.observe(beat);
-        });
 
         // ── HERO HUD TIMESTAMP ──
         const hudTimestampEl = document.getElementById('hud-timestamp');

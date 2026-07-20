@@ -796,44 +796,6 @@ body {
     pointer-events: none;
 }
 
-/* ── STORYTELLING SECTION ── */
-.story-section {
-    background: var(--bg);
-    padding: 20vh 48px;
-    display: flex;
-    flex-direction: column;
-    gap: 50vh;
-}
-
-.story-beat {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    min-height: 20vh;
-}
-
-.story-line {
-    font-family: 'Vendetta', serif;
-    font-size: clamp(28px, 5vw, 56px);
-    color: var(--muted);
-    text-align: center;
-    opacity: 0.12;
-    transform: translateY(24px) scale(0.94);
-    transition: opacity 0.9s var(--ease), transform 0.9s var(--ease), color 0.9s var(--ease);
-    will-change: transform, opacity;
-}
-
-.story-beat.visible .story-line {
-    opacity: 1;
-    transform: translateY(0) scale(1);
-    color: var(--text);
-}
-
-.story-beat.visible .story-accent {
-    color: var(--gold);
-    text-shadow: 0 0 40px rgba(201,135,58,0.35);
-}
-
 /* ── ABOUT ── */
 .about-section {
     position: relative;
@@ -987,6 +949,5 @@ body {
     .about-grid { grid-template-columns: 1fr; gap: 48px; }
     .contact-grid { grid-template-columns: 1fr 1fr; }
     .footer { padding: 24px; }
-    .story-section { padding: 12vh 24px; gap: 32vh; }
     .music-card, .music-card-art { width: 260px; height: 260px; }
 }
