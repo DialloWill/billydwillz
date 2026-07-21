@@ -21,6 +21,30 @@
 </head>
 <body>
 
+    <!-- CINEMATIC INTRO — one-time still-image sequence gating the hero.
+         Hidden instantly (before paint) for repeat visitors via the
+         localStorage flag checked in the inline script right below it. -->
+    <div class="intro" id="intro" aria-hidden="true">
+        <button class="intro-skip" id="intro-skip" type="button">
+            <span class="intro-skip-corner intro-skip-corner--tl"></span>
+            <span class="intro-skip-corner intro-skip-corner--tr"></span>
+            <span class="intro-skip-corner intro-skip-corner--bl"></span>
+            <span class="intro-skip-corner intro-skip-corner--br"></span>
+            Skip
+        </button>
+        <div class="intro-visual" id="intro-visual"></div>
+        <div class="intro-flash" id="intro-flash"></div>
+        <div class="intro-text" id="intro-text"></div>
+        <div class="intro-wordmark" id="intro-wordmark">Billy<span class="intro-wordmark-accent">D</span>.Willz</div>
+    </div>
+    <script>
+        // Runs synchronously, right after the intro markup is parsed, so a
+        // repeat visitor's intro is gone before the browser paints anything.
+        if (localStorage.getItem('billydwillz_intro_seen') === '1') {
+            document.getElementById('intro').style.display = 'none';
+        }
+    </script>
+
     <!-- NAV -->
     <nav class="nav" id="nav">
         <div class="nav-inner">
@@ -269,6 +293,263 @@
     </footer>
 
     <script>
+        // ── CINEMATIC INTRO SEQUENCE ──
+        // Still-image sequence, six beats. "Burst" beats simulate rapid AMV-style
+        // cuts from a single source photo by swapping background-position (which
+        // part of the photo is on screen) and a transform scale/jitter snap
+        // between cuts — no extra footage, just crop/zoom variants per cut.
+        (function () {
+            const INTRO_SEEN_KEY = 'billydwillz_intro_seen';
+            const introEl = document.getElementById('intro');
+            if (!introEl || introEl.style.display === 'none' || localStorage.getItem(INTRO_SEEN_KEY) === '1') {
+                return;
+            }
+
+            const visual = document.getElementById('intro-visual');
+            const flashEl = document.getElementById('intro-flash');
+            const textEl = document.getElementById('intro-text');
+            const wordmarkEl = document.getElementById('intro-wordmark');
+            const skipBtn = document.getElementById('intro-skip');
+
+            const INTRO_IMG = 'assets/images/intro/';
+
+            const BEATS = [
+                {
+                    type: 'burst',
+                    text: 'This is not a Drill',
+                    cuts: [
+                        { img: INTRO_IMG + 'beat1-lightning-1.jpg', pos: '50% 74%', zoom: 1.55, ms: 200, jx: -3, jy: 2 },
+                        { img: INTRO_IMG + 'beat1-lightning-1.jpg', pos: '50% 88%', zoom: 1.15, ms: 170, jx: 2, jy: -2 },
+                        { img: INTRO_IMG + 'beat1-lightning-1.jpg', pos: '60% 22%', zoom: 1.5, ms: 230, jx: -2, jy: 3 },
+                        { img: INTRO_IMG + 'beat1-lightning-2.jpg', pos: '55% 74%', zoom: 1.6, ms: 150, jx: 3, jy: -1 },
+                        { img: INTRO_IMG + 'beat1-lightning-2.jpg', pos: '50% 90%', zoom: 1.2, ms: 260, jx: -1, jy: 2 },
+                        { img: INTRO_IMG + 'beat1-lightning-3.jpg', pos: '68% 65%', zoom: 1.55, ms: 180, jx: 2, jy: 2 },
+                        { img: INTRO_IMG + 'beat1-lightning-3.jpg', pos: '55% 85%', zoom: 1.15, ms: 240, jx: -3, jy: -2, flash: 'red' }
+                    ]
+                },
+                {
+                    type: 'held',
+                    text: 'Life Starts at the End of Our Comfort Zone.',
+                    img: INTRO_IMG + 'beat2-threshold.png',
+                    pos: '44% 50%',
+                    holdMs: 2400
+                },
+                {
+                    type: 'burst',
+                    text: 'To Live Now and Die Another Day.',
+                    cuts: [
+                        { img: INTRO_IMG + 'beat3-lighttrails.jpg', pos: '50% 55%', zoom: 1.15, ms: 190, jx: 2, jy: -2 },
+                        { img: INTRO_IMG + 'beat3-lighttrails.jpg', pos: '32% 26%', zoom: 1.6, ms: 150, jx: -2, jy: 2 },
+                        { img: INTRO_IMG + 'beat3-lighttrails.jpg', pos: '52% 45%', zoom: 1.4, ms: 220, jx: 3, jy: 1 },
+                        { img: INTRO_IMG + 'beat3-lighttrails.jpg', pos: '70% 80%', zoom: 1.55, ms: 140, jx: -1, jy: -3 },
+                        { img: INTRO_IMG + 'beat3-lighttrails.jpg', pos: '46% 50%', zoom: 1.75, ms: 200, jx: 2, jy: 2 },
+                        { img: INTRO_IMG + 'beat3-lighttrails.jpg', pos: '30% 60%', zoom: 1.2, ms: 250, jx: -2, jy: -1, flash: 'red' }
+                    ]
+                },
+                {
+                    type: 'held',
+                    text: 'You Gotta Believe in Something...',
+                    img: INTRO_IMG + 'beat4-contemplative.png',
+                    pos: '38% 55%',
+                    holdMs: 2000
+                },
+                {
+                    type: 'held',
+                    text: 'Y not Believe in Me...',
+                    img: 'assets/images/hero-figure.png',
+                    pos: 'center 30%',
+                    holdMs: 2800
+                },
+                {
+                    type: 'burst',
+                    text: 'One',
+                    isFinal: true,
+                    cuts: [
+                        { img: INTRO_IMG + 'beat6-smoke-crop-3.png', pos: '55% 45%', zoom: 1.15, ms: 260, jx: 2, jy: -2 },
+                        { img: INTRO_IMG + 'beat6-smoke-crop-2.png', pos: '50% 55%', zoom: 1.15, ms: 220, jx: -2, jy: 2 },
+                        { img: INTRO_IMG + 'beat6-smoke-crop-1.png', pos: '50% 45%', zoom: 1.25, ms: 320, jx: 0, jy: 0, flash: 'red' }
+                    ]
+                }
+            ];
+
+            function preloadImage(src) {
+                return new Promise((resolve) => {
+                    const img = new Image();
+                    img.onload = resolve;
+                    img.onerror = resolve;
+                    img.src = src;
+                });
+            }
+
+            function timeout(ms) {
+                return new Promise((resolve) => setTimeout(resolve, ms));
+            }
+
+            const allImageUrls = [];
+            BEATS.forEach((beat) => {
+                if (beat.type === 'burst') {
+                    beat.cuts.forEach((cut) => allImageUrls.push(cut.img));
+                } else {
+                    allImageUrls.push(beat.img);
+                }
+            });
+            const beat1Urls = BEATS[0].cuts.map((cut) => cut.img);
+            const restUrls = allImageUrls.filter((url) => !beat1Urls.includes(url));
+
+            let introActive = true;
+            let currentRAF = null;
+            let pendingTimers = [];
+
+            function wait(ms) {
+                return new Promise((resolve) => {
+                    const id = setTimeout(() => {
+                        pendingTimers = pendingTimers.filter((t) => t !== id);
+                        resolve();
+                    }, ms);
+                    pendingTimers.push(id);
+                });
+            }
+
+            function clearPendingTimers() {
+                pendingTimers.forEach(clearTimeout);
+                pendingTimers = [];
+            }
+
+            function restartAnim(el, className) {
+                el.classList.remove(className);
+                void el.offsetWidth;
+                el.classList.add(className);
+            }
+
+            function flash(color, fadeMs) {
+                flashEl.style.transition = 'none';
+                flashEl.style.setProperty('--intro-flash-color', color);
+                flashEl.style.opacity = '0.85';
+                requestAnimationFrame(() => {
+                    flashEl.style.transition = `opacity ${fadeMs}ms ease-out`;
+                    flashEl.style.opacity = '0';
+                });
+            }
+
+            function showText(str) {
+                textEl.classList.remove('intro-text-in');
+                void textEl.offsetWidth;
+                textEl.textContent = str;
+                requestAnimationFrame(() => textEl.classList.add('intro-text-in'));
+            }
+
+            function hideText() {
+                textEl.classList.remove('intro-text-in');
+            }
+
+            function applyCut(cut) {
+                flash(cut.flash === 'red' ? '#9e363a' : '#ffffff', cut.flash === 'red' ? 90 : 70);
+                visual.style.backgroundImage = `url('${cut.img}')`;
+                visual.style.backgroundPosition = cut.pos;
+                visual.style.transformOrigin = cut.pos;
+                visual.style.setProperty('--jx', (cut.jx || 0) + 'px');
+                visual.style.setProperty('--jy', (cut.jy || 0) + 'px');
+                visual.style.setProperty('--peak-scale', cut.zoom || 1.35);
+                visual.style.setProperty('--snap-ms', Math.max(120, cut.ms - 20) + 'ms');
+                restartAnim(visual, 'intro-cut-snap');
+            }
+
+            async function playBurst(beat) {
+                showText(beat.text);
+                for (const cut of beat.cuts) {
+                    if (!introActive) return;
+                    applyCut(cut);
+                    await wait(cut.ms);
+                }
+            }
+
+            function playHeld(beat) {
+                showText(beat.text);
+                flash('#ffffff', 90);
+                visual.classList.remove('intro-cut-snap');
+                visual.style.backgroundImage = `url('${beat.img}')`;
+                visual.style.backgroundPosition = beat.pos;
+                visual.style.transformOrigin = beat.pos;
+                visual.style.transform = 'translate3d(0px, 0px, 0) scale(1)';
+
+                const seed1 = Math.random() * 10;
+                const seed2 = Math.random() * 10;
+                const start = performance.now();
+                const holdMs = beat.holdMs;
+
+                return new Promise((resolve) => {
+                    function frame(now) {
+                        if (!introActive) { resolve(); return; }
+                        const elapsed = now - start;
+                        const t = Math.min(1, elapsed / holdMs);
+                        const scale = 1 + 0.07 * t;
+                        const jx = Math.sin(elapsed * 0.0011 + seed1) * 2.6;
+                        const jy = Math.cos(elapsed * 0.0009 + seed2) * 2.2;
+                        visual.style.transform = `translate3d(${jx}px, ${jy}px, 0) scale(${scale})`;
+                        if (elapsed < holdMs) {
+                            currentRAF = requestAnimationFrame(frame);
+                        } else {
+                            resolve();
+                        }
+                    }
+                    currentRAF = requestAnimationFrame(frame);
+                });
+            }
+
+            async function finishIntro() {
+                hideText();
+                await wait(60);
+                if (!introActive) return;
+                await new Promise((resolve) => requestAnimationFrame(() => requestAnimationFrame(resolve)));
+                wordmarkEl.classList.add('intro-wordmark-in');
+                await wait(1100);
+                if (!introActive) return;
+                await revealHero();
+            }
+
+            async function revealHero() {
+                introEl.classList.add('intro-hidden');
+                await wait(650);
+                introEl.style.display = 'none';
+                localStorage.setItem(INTRO_SEEN_KEY, '1');
+            }
+
+            async function runIntro() {
+                for (const beat of BEATS) {
+                    if (!introActive) return;
+                    if (beat.type === 'burst') {
+                        await playBurst(beat);
+                    } else {
+                        await playHeld(beat);
+                        if (!introActive) return;
+                        hideText();
+                        await wait(180);
+                    }
+                }
+                if (!introActive) return;
+                await finishIntro();
+            }
+
+            function skipIntro() {
+                if (!introActive) return;
+                introActive = false;
+                clearPendingTimers();
+                if (currentRAF) cancelAnimationFrame(currentRAF);
+                flashEl.style.transition = 'none';
+                flashEl.style.opacity = '0';
+                hideText();
+                wordmarkEl.classList.remove('intro-wordmark-in');
+                revealHero();
+            }
+
+            skipBtn.addEventListener('click', skipIntro);
+
+            Promise.all(restUrls.map(preloadImage));
+            Promise.race([Promise.all(beat1Urls.map(preloadImage)), timeout(1500)]).then(() => {
+                if (introActive) runIntro();
+            });
+        })();
+
         // ── LENIS SMOOTH SCROLL (native-scroll fallback if the CDN/library failed) ──
         let lenis;
         if (typeof Lenis !== 'undefined') {
